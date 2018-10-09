@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+  <svg style="display: none;">
+    <symbol id="check-circle"
+      viewBox="0 0 448 512">
+      <path fill="green" d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 48c110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200-110.532 0-200-89.451-200-200 0-110.532 89.451-200 200-200m140.204 130.267l-22.536-22.718c-4.667-4.705-12.265-4.736-16.97-.068L215.346 303.697l-59.792-60.277c-4.667-4.705-12.265-4.736-16.97-.069l-22.719 22.536c-4.705 4.667-4.736 12.265-.068 16.971l90.781 91.516c4.667 4.705 12.265 4.736 16.97.068l172.589-171.204c4.704-4.668 4.734-12.266.067-16.971z" class="">
+      </path>
+    </symbol>
+
+    <symbol id="times-circle"
+      viewBox="0 0 448 512">
+      <path fill="red" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm101.8-262.2L295.6 256l62.2 62.2c4.7 4.7 4.7 12.3 0 17l-22.6 22.6c-4.7 4.7-12.3 4.7-17 0L256 295.6l-62.2 62.2c-4.7 4.7-12.3 4.7-17 0l-22.6-22.6c-4.7-4.7-4.7-12.3 0-17l62.2-62.2-62.2-62.2c-4.7-4.7-4.7-12.3 0-17l22.6-22.6c4.7-4.7 12.3-4.7 17 0l62.2 62.2 62.2-62.2c4.7-4.7 12.3-4.7 17 0l22.6 22.6c4.7 4.7 4.7 12.3 0 17z" class="">
+      </path>
+    </symbol>
+  </svg>
+</head>
+
+<body>
+  <div id="app">
+
+    <div class="row pad-bot-10">
+
+      <div class="col-4 menu-left">
+        <p class="instrument-heading-text">Mapping and assessment of ecosystems and their services</p>
+
+        <transition name="fade">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            v-if="!showTable()"  
+            @click="resetSelected"
+            >Reset
+          </button>
+        </transition>
+      </div>
+      <!-- actual heading -->
+      <div
+        v-for="header in biseHeader"
+        class="col-1-sm menu"
+        @mouseenter="handleMouseEnterHeader(header.code)"
+        @mouseleave="handleMouseLeaveHeader"
+        @click="handleHeaderClick(header)"
+        :class="{ 'accentuate': (selectedHeaderTemp === header.code), 'selected': arrowsStyle.header[header.code] !== 'lightgrey'}"
+      >
+        <div class="instrument-heading-wrap">
+          <p class="instrument-heading-text">{{header.name}}</p>
+          <p
+            class="instrument-heading-bar"
+            :style="{ 'background-color': header.colour }"
+          ></p>           
+        </div>
+
+        <svg
+          aria-hidden="true"
+          data-prefix="fas"
+          data-icon="arrow-alt-down"
+          role="img"
+          viewBox="0 0 448 512"
+          class="arrow-top"
+        >
+        <!-- <path
+          :style="{ 'fill': selectedHeader === header.code ? selectedColour : notSelectedColour}"
+          d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
+        ></path> -->
+          <path
+            :style="{ 'fill': arrowsStyle.header[header.code]}"
+            d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
+          ></path>
+      </svg>
+      </div>
+    </div>
+
+    <!-- lateral ecosystem 0y-->
+    <div class="row pad-bot-10">
+
+      <!-- ecosystem-heading -->
+      <div class="col-4 ecosystem-heading">
+        <div class="col-1 lateral-text-wrapper">
+          <div
+            class="lateral-text lateral-text-ontop"
+            :class="{'selected': ecoLine === 'pressure'}"
+            @click="handleEcoPressureLineClick()"
+          >Pressure</div>
+          <div
+            class="lateral-text lateral-text-onbottom"
+            :class="{'selected': ecoLine && ecoLine !== 'pressure'}"
+            @click="handleEcoConditionLineClick()"
+          >Ecosystem condition</div>          
+        </div>
+
+        <!-- <canvas class="col-1-sm" id="myCanvas" width="50" height="550"></canvas> -->
+        <div class="ecosystem-heading-content">
+          <div 
+            v-for="ecosystemItem in biseEco"
+            class="ecosystem-item"
+            @mouseenter="handleMouseEnterEco(ecosystemItem.code)"
+            @mouseleave="handleMouseLeaveEco"
+            @click="handleEcoClick(ecosystemItem)"
+            :class="{ 'accentuate': (selectedEcoTemp === ecosystemItem.code), 'selected': arrowsStyle.eco[ecosystemItem.code] !== 'lightgrey'}"
+          >
+            <div class="ecosystem-wrap">
+              <p class="ecosystem-text">{{ecosystemItem.name}}</p>
+              <p class="ecosystem-bar col-1-sm"></p>
+            </div>
+            <svg 
+              aria-hidden="true"
+              data-prefix="fas"
+              data-icon="arrow-alt-right"
+              role="img"
+              viewBox="0 0 448 512"
+              class="arrow-right"
+            >
+            <!-- <path
+              :style="{ 'fill': selectedEco === ecosystemItem.code ? selectedColour : notSelectedColour}"
+              d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
+            ></path> -->
+              <path
+                :style="{ 'fill': arrowsStyle.eco[ecosystemItem.code]}"
+                d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
+              ></path>
+            </svg>
+
+          </div>
+        </div>
+      </div>
+      
+      <!-- the table -->
+      <the-table v-show="showTable()">
+        <div
+          v-for="header in biseHeader"
+          class="col-1-sm menu"
+          :style="{ 'background-color': header.colour }"
+          :class="{ 'accentuate': (selectedHeader === header.code)}"
+        >
+          <ul>
+            <li
+              v-for="ecosystemItem in biseEco"
+              :class="{
+                'highlight-li': (selectedEcoTemp === ecosystemItem.code) || (selectedHeaderTemp === header.code),
+                'not-visible': !bise[header.code][ ecosystemItem.code]
+              }"
+              @click="handleSelected(header.code,  ecosystemItem.code)"
+            ></li>
+          </ul>
+        </div>        
+      </the-table>
+
+      <the-item v-if="selectedItem">
+        <div class="row">
+          <div class="item">
+
+            <div class="wrapper-item">
+              <div 
+                v-if="showClassNameIndicator()"
+                class="col-2"
+              >
+                Class
+              </div>
+              <div class="col-10">Indicator</div>
+            </div>
+
+            <div class="jumbotron">
+              <div
+                v-for="itemClass in selectedItem.details.class"
+                class="detail clearfix"
+              >
+                <div class="col-12">
+                  <div class="lead col-2">
+                    <p>{{itemClass.name}}</p>
+                  </div>
+                  <ul class="col-10">
+                    <li 
+                      v-for="(indicatorValue, indicatorKey) in itemClass.indicator"
+                      @click="handleClickIndicator(indicatorValue, indicatorKey)"
+                      class="indicator-li"
+                      :style="{ 'font-weight': indicatorValue.bold ? 'bold' : 'normal'}"
+                      :class="{ 'selected-indicator': selectedIndicators[indicatorKey] }"
+                    >{{indicatorValue.name}}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="indicatorValue.data[policy.code]"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                        <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-item>
+
+      <the-eco-selection v-if="ecoLine === 'condition'">
+        <div class="row">
+          <div class="item">
+
+            <div class="jumbotron">
+              <button
+                class="btn primary"
+                @click="handleSelectedWaterEcoCondition()"
+              >
+                Water
+              </button>
+              <button
+                class="btn primary"
+                @click="handleSelectedMarineEcoCondition()"
+              >
+                Marine
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-selection>
+
+      <the-eco-pressure-selection v-if="ecoLine === 'pressure'">
+        <div class="row">
+          <div class="item">
+
+            <div class="jumbotron">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Indicator</th>
+                    <th v-for="header in biseHeader.slice(0,biseHeader.length-1)">{{header.abbreviation}}</th>
+                  </tr>
+                </thead>
+
+                <tbody v-for="classItem in pressures">
+                  <tr v-for="(indicatorValue, indicatorKey) in classItem.indicator">
+
+                    <td 
+                      v-if="computeClassNames(classItem.code, indicatorKey)"
+                      :rowspan="Object.keys(classItem.indicator).length"
+                    >{{classItem.name}}
+                    </td>
+
+                    <td class="indicators">
+                      {{indicatorValue.name}}
+                    </td>
+
+                    <td v-for="header in biseHeader.slice(0,biseHeader.length-1)">
+                      <span 
+                        class="bullet"
+                        @click="handleSelectedBullet(header.code, indicatorKey, classItem)"
+                      >{{doBullets(pressureOnAllHeaders[indicatorKey][header.code])}}
+                      </span>
+                    </td>
+                   
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="indicatorValue.data[policy.code]"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                        <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-pressure-selection>
+
+      <the-eco-water-selection v-if="ecoLine === 'water'">
+        <div class="row">
+          <div class="item">
+
+            <div class="jumbotron">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Indicator</th>
+                    <th v-for="header in biseHeader.slice(0, biseHeader.length-1)">{{header.abbreviation}}</th>
+                  </tr>
+                </thead>
+
+                <tbody v-for="classItem in waterEcosystem">
+                  <tr v-for="(indicatorValue, indicatorKey) in classItem.indicator">
+
+                    <td 
+                      v-if="computeClassNames(classItem.code, indicatorKey)"
+                      :rowspan="Object.keys(classItem.indicator).length"
+                    >{{classItem.name}}
+                    </td>
+
+                    <td class="indicators">
+                      {{indicatorValue.name}}
+                    </td>
+
+                    <td v-for="header in biseHeader.slice(0,biseHeader.length-1)">
+                      <span 
+                        class="bullet"
+                        @click="handleSelectedBullet(header.code, indicatorKey, classItem)"
+                      >{{doBullets(waterEcosystemOnAllHeaders[indicatorKey][header.code])}}
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="indicatorValue.data[policy.code]"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                        <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-water-selection>
+
+      <the-eco-marine-selection v-if="ecoLine === 'marine'">
+        <div class="row">
+          <div class="item">
+
+            <div class="jumbotron">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Indicator</th>
+                    <th v-for="header in marineHeaders">{{header.abbreviation}}</th>
+                  </tr>
+                </thead>
+
+                <tbody v-for="classItem in marineEcosystem">
+                  <tr v-for="(indicatorValue, indicatorKey) in classItem.indicator">
+
+                    <td 
+                      v-if="computeClassNames(classItem.code, indicatorKey)"
+                      :rowspan="Object.keys(classItem.indicator).length"
+                    >{{classItem.name}}
+                    </td>
+
+                    <td class="indicators">
+                      {{indicatorValue.name}}
+                    </td>
+
+                    <td v-for="header in marineHeaders">
+                      <span 
+                        class="bullet"
+                        @click="handleSelectedBullet(header.code, indicatorKey, classItem)"
+                      >{{doBullets(marineEcosystemOnAllHeaders[indicatorKey][header.code])}}
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="indicatorValue.data[policy.code]"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                        <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-marine-selection>
+
+      <the-header-selection v-if="selectedHeaderItem">
+        <div class="row">
+          <div class="item">
+
+            <div class="wrapper-item">
+              <div class="col-2">
+                Class
+              </div>
+              <div class="col-10">Indicator</div>
+            </div>
+
+            <div class="jumbotron">
+              <div
+                v-if="selectedHeaderItem[ecoItem.code] !== undefined"
+                v-for="ecoItem in biseEco"
+                class="detail clearfix"
+              >
+                <div
+                  
+                  v-for="itemClass in selectedHeaderItem[ecoItem.code].details.class" class="col-12"
+                >
+                  <div class="lead col-2">
+                    <p>{{itemClass.name}}</p>
+                  </div>
+                  <ul class="col-10">
+                    <li
+                      v-for="(indicatorValue, indicatorKey) in itemClass.indicator"
+                      @click="handleClickIndicator(indicatorValue, indicatorKey)"
+                      class="indicator-li"
+                      :style="{ 'font-weight': indicatorValue.bold ? 'bold' : 'normal'}"
+                      :class="{ 'selected-indicator': selectedIndicators[indicatorKey] }"
+                    >{{indicatorValue.name}}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="indicatorValue.data[policy.code]"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                        <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-header-selection>
+
+    </div>
+
+  </div>
+</body>
+
+<script src="main.js"></script>
+
+<style>
+</style>
+
+</html>

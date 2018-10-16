@@ -116,6 +116,7 @@ body {
   margin: 15px;
   height: 60px;
   overflow: hidden;
+  position: relative;
 }
 .ecosystem-wrap {
   border: 1px solid white;
@@ -150,6 +151,7 @@ body {
   width: 90%;
   float: left;
   padding: 15px;
+  cursor: pointer;
 }
 .ecosystem-heading-content {
   margin: 0;
@@ -311,8 +313,10 @@ body {
 
 .arrow-right {
   margin-left: 22px;
-  margin-top: 15px;
   height: 30px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .arrow-top {
   height: 30px;
@@ -950,4 +954,53 @@ button{
   font-size: 4rem;
   line-height: 10px;
   color: red;
+}
+
+
+.ecosystem-wrap.header.selected {
+      background-color: #f35555;
+    color: white;
+    border: 1px solid lightgrey!important;
+}
+
+/*.menu li.not-visible:first-of-type {
+      visibility: visible;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: white!important;
+    opacity: 1!important;
+    pointer-events: none;
+}*/
+
+
+
+
+.ecosystem-wrap.header {
+  font-weight: bold;
+    font-size: 1.3rem;
+    background: none;
+    border-bottom: 1px solid #eee;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+    padding: 1rem;
+}
+
+.ecosystem-wrap.header:hover {
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  text-shadow: 1px 1px 3px #aaa;
+  border-bottom-color: #f35555;
+}
+
+.header .ecosystem-text {
+      padding: 0;
+    width: 100%;
+}
+
+.menu li {
+  cursor: pointer;
 }

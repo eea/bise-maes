@@ -8137,8 +8137,18 @@ const bise = {
 };
 const biseEco = [
   {
+    "code": "pressure_header",
+    "name": "Pressure",
+    "type": "header"
+  },
+  {
     "code": "pressure",
     "name": "Pressure on ecosystem",
+  },
+  {
+    "code": "ecosystem_header",
+    "name": "Ecosystem condition",
+    "type": "header"
   },
   {
     "code": "environmental",
@@ -8163,7 +8173,12 @@ const biseEco = [
   {
     "code": "functional-soil",
     "name": "Functional soil attributes"
-  }
+  },
+  {
+    "code": "services_header",
+    "name": "Ecosystem services",
+    "type": "header"
+  },
 ];
 const biseHeader = [
   {
@@ -9013,6 +9028,7 @@ let app = new Vue({
     manageArrows(expr, ecoItem, headerItem) {
       let tempArrowStyle = JSON.parse(JSON.stringify(this.arrowsStyle));
 
+      console.log(expr,ecoItem,headerItem)
       switch (expr) {
         case 'colourAllHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
@@ -9022,11 +9038,13 @@ let app = new Vue({
           break;
         case 'colourAllWaterHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
+            console.log(key)
             if(key === 'marine') {
               tempArrowStyle.header[key] = notSelectedColour;
-            } else {
+            } else if (['rivers', 'wetland'].includes(key)) {
               tempArrowStyle.header[key] = selectedColour;
             }
+
           });
           tempArrowStyle.eco[ecoItem] = selectedColour;
           break;
@@ -9046,9 +9064,20 @@ let app = new Vue({
           });
           tempArrowStyle.header[headerItem] = selectedColour;
           break;
+        case 'colourAllEcoNoPressure':
+          Object.keys(tempArrowStyle.eco).map((key) => {
+            if(!['pressure','pressure_header'].includes(key))
+              tempArrowStyle.eco[key] = selectedColour;
+          });
+          tempArrowStyle.header[headerItem] = selectedColour;
+          break;
         case 'colourOnlyTwo':
           tempArrowStyle.eco[ecoItem] = selectedColour;
           tempArrowStyle.header[headerItem] = selectedColour;
+          break;
+
+        case 'colourOnlyOne':
+          tempArrowStyle.eco[ecoItem] = selectedColour;
           break;
         case 'resetAll':
           Object.keys(tempArrowStyle.header).map((key) => {
@@ -9075,7 +9104,9 @@ let app = new Vue({
       this.resetSelected();
 
       if(ev.code === 'pressure') {
-        this.manageArrows('colourAllHeaders', ev.code, null);
+        // this.manageArrows('colourAllHeaders', ev.code, null);
+      } else {
+        // this.manageArrows('colourOnlyOne', ev.code, null)
       }
 
       Object.keys(this.bise).map((value) => {
@@ -9093,6 +9124,8 @@ let app = new Vue({
     },
     handleEcoConditionLineClick() {
       this.resetSelected();
+
+      this.manageArrows('colourAllEcoNoPressure', null);
 
       this.ecoLine = 'condition';
     },
@@ -9128,9 +9161,19 @@ let app = new Vue({
       let theObj = {};
 
       theObj[indicatorKey] = indicatorValue;
-      this.selectedIndicators[indicatorKey] ?
-        Vue.delete(this.selectedIndicators, indicatorKey) :
+      if(this.selectedIndicators[indicatorKey]) {
+        Vue.delete(this.selectedIndicators, indicatorKey)  
+      }
+       else {
         this.selectedIndicators = Object.assign({}, this.selectedIndicators, theObj);
+        this.$nextTick(function(){
+          let modal = document.querySelector('.modal.col-6')
+          modal.scrollIntoView();
+        })  
+      }
+
+    
+
     },
     handleSelectedBullet(headerKey, indicatorKey, classItem) {
       let pressureInHeader = this.bise[headerKey].pressure.details.class;

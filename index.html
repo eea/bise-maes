@@ -84,7 +84,7 @@
 
       <!-- ecosystem-heading -->
       <div class="col-4 ecosystem-heading">
-        <div class="col-1 lateral-text-wrapper">
+      <!--   <div class="col-1 lateral-text-wrapper">
           <div
             class="lateral-text lateral-text-ontop"
             :class="{'selected': ecoLine === 'pressure'}"
@@ -95,12 +95,13 @@
             :class="{'selected': ecoLine && ecoLine !== 'pressure'}"
             @click="handleEcoConditionLineClick()"
           >Ecosystem condition</div>          
-        </div>
+        </div> -->
 
         <!-- <canvas class="col-1-sm" id="myCanvas" width="50" height="550"></canvas> -->
         <div class="ecosystem-heading-content">
           <div 
             v-for="ecosystemItem in biseEco"
+            v-if="ecosystemItem.type != 'header'"
             class="ecosystem-item"
             @mouseenter="handleMouseEnterEco(ecosystemItem.code)"
             @mouseleave="handleMouseLeaveEco"
@@ -109,7 +110,7 @@
           >
             <div class="ecosystem-wrap">
               <p class="ecosystem-text">{{ecosystemItem.name}}</p>
-              <p class="ecosystem-bar col-1-sm"></p>
+              <!-- <p class="ecosystem-bar col-1-sm"></p> -->
             </div>
             <svg 
               aria-hidden="true"
@@ -130,6 +131,18 @@
             </svg>
 
           </div>
+          <div class="ecosystem-item" v-else>
+            <div class="ecosystem-wrap header"
+              :class="ecosystemItem.code === 'pressure_header' ? {'selected': ecoLine === 'pressure'} : {'selected': ecoLine && ecoLine !== 'pressure'}"
+              @click="ecosystemItem.code === 'pressure_header' ? handleEcoPressureLineClick() : handleEcoConditionLineClick()"
+            >
+            <div class="ecosystem-text">
+               {{ecosystemItem.name}}
+            </div>
+          </div>
+          </div>
+
+
         </div>
       </div>
       
@@ -204,7 +217,7 @@
                     <ul class="col-10">
                       <li
                         v-for="policy in allPolicies"
-                        v-if="indicatorValue.data[policy.code]"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
                       >
                         <svg
                           v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
@@ -212,10 +225,10 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                        <span
+                    <!--    <span
                           v-if="policy.code === 'policyUse' || policy.code === 'data'"
                           class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -237,7 +250,7 @@
                 class="btn primary"
                 @click="handleSelectedWaterEcoCondition()"
               >
-                Water
+                Fresh water
               </button>
               <button
                 class="btn primary"
@@ -306,7 +319,7 @@
                     <ul class="col-10">
                       <li
                         v-for="policy in allPolicies"
-                        v-if="indicatorValue.data[policy.code]"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
                       >
                         <svg
                           v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
@@ -314,10 +327,10 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                        <span
+                    <!--    <span
                           v-if="policy.code === 'policyUse' || policy.code === 'data'"
                           class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -386,7 +399,7 @@
                     <ul class="col-10">
                       <li
                         v-for="policy in allPolicies"
-                        v-if="indicatorValue.data[policy.code]"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
                       >
                         <svg
                           v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
@@ -394,10 +407,10 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                        <span
+                    <!--    <span
                           v-if="policy.code === 'policyUse' || policy.code === 'data'"
                           class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -466,7 +479,7 @@
                     <ul class="col-10">
                       <li
                         v-for="policy in allPolicies"
-                        v-if="indicatorValue.data[policy.code]"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
                       >
                         <svg
                           v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
@@ -474,10 +487,10 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                        <span
+                    <!--    <span
                           v-if="policy.code === 'policyUse' || policy.code === 'data'"
                           class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -542,7 +555,7 @@
                     <ul class="col-10">
                       <li
                         v-for="policy in allPolicies"
-                        v-if="indicatorValue.data[policy.code]"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
                       >
                         <svg
                           v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
@@ -550,10 +563,10 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                        <span
+                    <!--    <span
                           v-if="policy.code === 'policyUse' || policy.code === 'data'"
                           class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span>
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>

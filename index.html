@@ -133,8 +133,8 @@
           </div>
           <div class="ecosystem-item" v-else>
             <div class="ecosystem-wrap header"
-              :class="ecosystemItem.code === 'pressure_header' ? {'selected': ecoLine === 'pressure'} : {'selected': ecoLine && ecoLine !== 'pressure'}"
-              @click="ecosystemItem.code === 'pressure_header' ? handleEcoPressureLineClick() : handleEcoConditionLineClick()"
+              :class="ecosystemClass(ecosystemItem.code)"
+              @click="ecosystemItemFunction(ecosystemItem.code)"
             >
             <div class="ecosystem-text">
                {{ecosystemItem.name}}
@@ -263,6 +263,1537 @@
           </div>
         </div>
       </the-eco-selection>
+
+      <the-eco-selection v-if="ecoLine === 'services'">
+        <div class="row">
+          <div class="item" style="padding: 0;overflow: hidden;border: none;">
+
+            <div class="card">
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedWaterEcoServices()"
+              >
+                Indicators for ecosystem services delivered by freshwater ecosystems
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedMarineEcoServices()"
+              >
+                Indicators for ecosystem services delivered by marine ecosystems
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedTotalServices()"
+              >
+                Total number and break-down of ecosystem services indicators
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedAvailableServices()"
+              >
+                Available indicators for assessment of ecosystem services across different ecosystems
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedUrbanServices()"
+              >
+                Key urban ecosystem services
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-selection>
+
+
+      <the-eco-marine_services-selection v-if="ecoLine === 'marine_service'">
+        <div class="row full">
+          <div class="item full">
+            <div class="jumbotron full">
+              <table class="table table-bordered full-width full-bordered">
+                    
+                <thead>
+                   <tr>
+                    
+                      <th>Division</th>
+                    
+                      <th>Group</th>
+                    
+                      <th>Class</th>
+                    
+                      <th>Marine inlets and transitional waters</th>
+                    
+                      <th>Coastal waters</th>
+                    
+                      <th>Shelf waters</th>
+                    
+                      <th>Open Ocean</th>
+                    
+                  </tr>
+                </thead>
+                      <tbody>
+                          <tr>
+                              <td rowspan="8">Nutrition</td>
+                              <td rowspan="6">Biomass</td>
+                              <td>Cultivated crops</td>
+                              <td colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td>Reared animals and their outputs</td>
+                              <td colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td>Wild plants, algae and their outputs</td>
+                              <td colspan="2">● Harvest (ton/a)</td>
+                              <td colspan="2"></td>
+                          </tr>
+                          <tr>
+                              <td>Wild animals and their outputs</td>
+                              <td>● Landings (ton)</td>
+                              <td></td>
+                              <td colspan="2">● Landings (ton)  ● CPUE (ton)</td>
+                          </tr>
+                          <tr>
+                              <td>Plants and algae from in-situ aquaculture</td>
+                              <td colspan="2">● Harvest (ton/a)</td>
+                              <td colspan="2"></td>
+                          </tr>
+                          <tr>
+                              <td>Animals from in-situ aquaculture</td>
+                              <td colspan="3">● Harvest (ton/a)</td>
+                              <td></td>
+                          </tr>
+                          <tr>
+                              <td rowspan="2">Water</td>
+                              <td>Surface water for drinking</td>
+                              <td colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td>Ground water for drinking</td>
+                              <td colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td rowspan="5">Materials</td>
+                              <td rowspan="3">Biomass</td>
+                              <td>Fibres and other materials from plants, algae and animals
+                                  for direct use or processing</td>
+                              <td rowspan="2">● Harvest (ton/a)</td>
+                              <td colspan="3">● Landings (ton) ● Harvest (ton/a)</td>
+                          </tr>
+                          <tr>
+                              <td>Materials from plants, algae and animals for agricultural use</td>
+                              <td colspan="3">● Landings (ton) ● Harvest (ton/a)</td>
+                          </tr>
+                          <tr>
+                              <td>Genetic materials from all biota</td>
+                              <td colspan="4">● Patents (no.) ● Published articles (no.)</td>
+                          </tr>
+                          <tr>
+                              <td rowspan="2">Water</td>
+                              <td>Surface water for non-drinking purposes</td>
+                              <td colspan="4" rowspan="2"></td>
+                          </tr>
+                          <tr>
+                              <td>Ground water for non-drinking purposes</td>
+                          </tr>
+                          <tr>
+                              <td rowspan="3">Energy</td>
+                              <td rowspan="2">Biomass-based
+                                  energy sources</td>
+                              <td>Plant-based resources</td>
+                              <td rowspan="2" colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td>Animal-based resources</td>
+                          </tr>
+                          <tr>
+                              <td>Mechanical
+                                  energy</td>
+                              <td>Animal-based energy</td>
+                              <td colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td rowspan="5">Mediation of waste, toxics
+                                  and other nuisances</td>
+                              <td rowspan="2">Mediation by
+                                  biota</td>
+                              <td>Bio-remediation by micro-organisms, algae, plants, and
+                                  animals</td>
+                              <td rowspan="4" colspan="3">● Nutrient load to coast (ton/a)
+                                  <br>● HM and POP deposition (ton/a)
+                                  <br>● Oxyrisk</td>
+                              <td rowspan="4">● HM and POP
+                                  deposition (ton/a)
+                                  <br>● Oxyrisk</td>
+                          </tr>
+                          <tr>
+                              <td>Filtration/sequestration/storage/accumulation by micro-
+                                  organisms, algae, plants, and animals</td>
+                          </tr>
+                          <tr>
+                              <td rowspan="3">Mediation by
+                                  ecosystems</td>
+                              <td>Filtration/sequestration/storage/accumulation by ecosystems</td>
+                          </tr>
+                          <tr>
+                              <td>Dilution by atmosphere, freshwater and marine ecosystems</td>
+                          </tr>
+                          <tr>
+                              <td>Mediation of smell/noise/visual impacts</td>
+                              <td colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td rowspan="6">Mediation of flows</td>
+                              <td rowspan="2">Mass flows</td>
+                              <td>Mass stabilisation and control of erosion rates</td>
+                              <td rowspan="2" colspan="2">● Composite indices based on extent
+                                  of selected emerged, submerged and
+                                  intertidal habitats, coastline slope and
+                                  coastal geomorphology, wave regime,
+                                  tidal range, relative sea level, storm
+                                  surge</td>
+                              <td colspan="2" rowspan="2"></td>
+                          </tr>
+                          <tr>
+                              <td>Buffering and attenuation of mass flows</td>
+                          </tr>
+                          <tr>
+                              <td rowspan="2">Liquid flows</td>
+                              <td>Hydrological cycle and water flow maintenance</td>
+                              <td colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td>Flood protection</td>
+                              <td colspan="2">See buffering and attenuation of
+                                  mass flows</td>
+                              <td colspan="2"></td>
+                          </tr>
+                          <tr>
+                              <td rowspan="2">Gaseous / air
+                                  flows</td>
+                              <td>Storm protection</td>
+                              <td rowspan="2" colspan="4"></td>
+                          </tr>
+                          <tr>
+                              <td>Ventilation and transpiration</td>
+                          </tr>
+                
+                        <tr>
+                            <td rowspan="10">Maintenance of physical,
+                                chemical, biological
+                                conditions</td>
+                            <td rowspan="2">Lifecycle
+                                maintenance,
+                                habitat and
+                                gene pool
+                                protection</td>
+                            <td>Pollination and seed dispersal</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td>Maintaining nursery populations and habitats</td>
+                            <td colspan="2">● Submerged and intertidal
+                                habitats diversity (no.)
+                                <br>● Oxygen concentration (%)
+                                <br>● Turbidity (%)
+                                <br>● Species distribution (km2/ha) <br>●
+                                Abundance and richness - at age
+                                (ton/a)
+                                <br>● Extent of marine protected areas
+                                (km2/ha)
+                                <br>●Nursery areas (km2/ha)</td>
+                            <td>● Oxygen
+                                concentration (%)
+                                <br>● Turbidity (%)
+                                <br>● Species
+                                distribution (km2/ha)
+                                <br>● Abundance and
+                                richness - at age
+                                (ton/a)
+                                <br>● Extent of marine
+                                protected areas
+                                (km2/ha)
+                                <br>●Nursery areas
+                                (km2/ha)</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Pest and
+                                disease control</td>
+                            <td>Pest control</td>
+                            <td colspan="4">● Presence (no.) and <br>● Distribution (km2) of alien species</td>
+                        </tr>
+                        <tr>
+                            <td>Disease control</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Soil formation
+                                and
+                                composition</td>
+                            <td>Weathering processes</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td>Decomposition and fixing processes</td>
+                            <td colspan="3">● Nitrogen removal (%) <br>● Water residence time (months) <br>●
+                                Depth/water residence time (m/year)</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Water
+                                conditions</td>
+                            <td>Chemical condition of freshwaters</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td>Chemical condition of salt waters</td>
+                            <td colspan="4">● Nutrient load to coast (ton/yr) <br>● HM and POP loading (ton/yr)
+                                <br>● Oxyrisk</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Atmospheric
+                                composition
+                                and climate
+                                regulation</td>
+                            <td>Global climate regulation by reduction of greenhouse gas
+                                concentrations</td>
+                            <td colspan="4">● C stock (tonC) <br>● C sequestration (tonC/a) <br>● pH <br>● blue C (tonC) <br>● PP(ton C/year)</td>
+                        </tr>
+                        <tr>
+                            <td>Micro and regional climate regulation</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="7">Physical and intellectual
+                                interactions with biota,
+                                ecosystems, and land-
+                                /seascapes [environmental
+                                settings]</td>
+                            <td rowspan="2">Physical and
+                                experiential
+                                interactions</td>
+                            <td>Experiential use of plants, animals and land-/seascapes in
+                                different environmental settings</td>
+                            <td colspan="3" rowspan="2">● Extent of marine protected areas (km2/ha)
+                                <br>● Presence of iconic/endangered species (no.)
+                                <br>● In-water activities occurrence (no.)
+                                <br>● Recreation trips (no./year)</td>
+                            <td rowspan="2">● Extent of marine
+                                protected areas
+                                (km2/ha)
+                                <br>● Presence of
+                                iconic/endangered
+                                species (no.)</td>
+                        </tr>
+                        <tr>
+                            <td>Physical use of land-/seascapes in different environmental
+                                settings</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="5">Intellectual and
+                                representative
+                                interactions</td>
+                            <td>Scientific</td>
+                            <td rowspan="2" colspan="4">● Scientific studies (no.) <br>● Documentaries, educational publications (no.)
+                                <br>● Visits to scientific and artistic visits exhibits (no.)</td>
+                        </tr>
+                        <tr>
+                            <td>Educational</td>
+                        </tr>
+                        <tr>
+                            <td>Heritage, cultural</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td>Entertainment</td>
+                            <td rowspan="2" colspan="4">● Documentaries, educational publications (no.) <br>● Visits to scientific and artistic
+                                visits exhibits (no.)</td>
+                        </tr>
+                        <tr>
+                            <td>Aesthetic</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Spiritual, symbolic and
+                                other interactions with</td>
+                            <td rowspan="2">Spiritual and/or
+                                emblematic</td>
+                            <td>Symbolic</td>
+                            <td colspan="4" rowspan="2"></td>
+                        </tr>
+                        <tr>
+                            <td>Sacred and/or religious</td>
+                        </tr>
+                        <tr>
+                          <td rowspan="2">biota, ecosystems, and
+                              land-/seascapes
+                              [environmental settings]</td>
+                          <td rowspan="2">Other cultural
+                              outputs<br> Bequest</td>
+                          <td>Existence</td>
+                          <td colspan="4" rowspan="2">● Extent of marine protected areas (km2/ha) <br>● Presence of iconic/endangered
+                              species (no.)</td>
+                      </tr>
+                      <tr>
+                        <td>Bequest</td>
+                      </tr>
+                    </tbody>
+
+                </table>
+              </div>
+          </div>
+        </div>
+      </the-eco-marine_services-selection>
+
+
+
+      <the-eco-available_services-selection v-if="ecoLine === 'available_service'">
+        <div class="row full">
+          <div class="item full">
+            <div class="jumbotron full">
+              <table class="table table-bordered full-width top-border no-empty">
+                    
+                <thead>
+                    <tr>
+                        <th>Ecosystem services</th>
+                        <th>Leader</th>
+                        <th>Indicator</th>
+                        <th>Marine systems</th>
+                    </tr>
+                </thead>
+               
+                  <tbody>
+                      <tr>
+                          <td>Cultivated crops</td>
+                          <td>Agro</td>
+                          <td>● Area and yields of food and feed crops</td>
+                          <td>● Yield</td>
+                      </tr>
+                      <tr>
+                          <td>Reared animals and their outputs</td>
+                          <td>Agro</td>
+                          <td>● Livestock</td>
+                          <td>● Landings</td>
+                      </tr>
+                      <tr>
+                          <td>Wild plants, algae and their outputs</td>
+                          <td>Forest</td>
+                          <td>● Distribution of wild berries (modelling)</td>
+                          <td>● Catch per unit effort (where applicable)</td>
+                      </tr>
+                      <tr>
+                          <td>Wild animals and their outputs</td>
+                          <td>Forest</td>
+                          <td>● Population sizes of species of interest</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Plants and algae from in-situ aquaculture</td>
+                          <td>Water</td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Animals from in-situ aquaculture</td>
+                          <td>Water</td>
+                          <td>● Freshwater aquaculture production</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Water (Nutrition)</td>
+                          <td>Water</td>
+                          <td>● Water abstracted</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Biomass (Materials)</td>
+                          <td>Forest</td>
+                          <td>● Area and yield of fibre crops<br> ● Timber</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td>Agro</td>
+                          <td>production and consumption statistics</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Water (Materials)</td>
+                          <td>Water</td>
+                          <td>● Water abstracted</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Plant-based resources</td>
+                          <td>Forest</td>
+                          <td>● Fuel wood statistics</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Animal-based resources</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Animal-based energy</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>(Mediation of waste, toxics and other nuisances)</td>
+                          <td>Forest</td>
+                          <td>● Area occupied by riparian forests</td>
+                          <td>● Nutrient load to coast</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td>● Nitrogen and Sulphur removal (forests)</td>
+                          <td>● Heavy metals and persistent organic pollutants deposition</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>● Oxyrisk</td>
+                      </tr>
+                      <tr>
+                          <td>Mass stabilisation and control of erosion rates</td>
+                          <td>Forest</td>
+                          <td>● Soil erosion risk or erosion protection</td>
+                          <td>● Coastal protection capacity</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td>Agro</td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Buffering and attenuation of mass flows</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Hydrological cycle and water flow maintenance</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Flood protection</td>
+                          <td>Fresh</td>
+                          <td>● Floodplains areas (and record of annual floods) ● Area of wetlands located in flood risk zones</td>
+                          <td>● Coastal protection capacity</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Storm protection</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Ventilation and transpiration</td>
+                          <td>Agro</td>
+                          <td>● Amount of biomass</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Pollination and seed dispersal</td>
+                          <td>Agro</td>
+                          <td>● Pollination potential</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Maintaining nursery populations and habitats</td>
+                          <td></td>
+                          <td>● Share of High Nature Value farmland</td>
+                          <td>● Oxygen concentration ● Turbidity</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td>● Ecological Status of water bodies</td>
+                          <td>● Species distribution ● Extent of marine protected areas</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Pest and disease control</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Weathering processes</td>
+                          <td>Agro</td>
+                          <td>● Share of organic farming ● Soil organic matter content ● Ph of topsoil ● Cation exchange capacity</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Decomposition and fixing processes</td>
+                          <td>Agro</td>
+                          <td>● Area of nitrogen fixing crops</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Chemical condition of freshwaters</td>
+                          <td>Water</td>
+                          <td>● Chemical status</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Chemical condition of salt waters</td>
+                          <td>Marine</td>
+                          <td></td>
+                          <td>● Nutrient load to coast</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>● HM and POP loading</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>● Oxyrisk</td>
+                      </tr>
+                      <tr>
+                          <td>Global climate regulation by reduction of greenhouse gas concentrations</td>
+                          <td>Forest</td>
+                          <td>● Carbon storage and sequestration by forests</td>
+                          <td>● Carbon stock ● Carbon sequestration ● pH; ● Blue carbon</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>● Primary production</td>
+                      </tr>
+                      <tr>
+                          <td>Micro and regional climate regulation</td>
+                          <td>Forest</td>
+                          <td>● Forest area</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Physical and experiential interactions</td>
+                          <td>Forest</td>
+                          <td>● Visitor statistics</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td>Agro</td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Intellectual and representative interactions</td>
+                          <td>Water Marine</td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Spiritual and/or emblematic</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Other cultural outputs</td>
+                          <td></td>
+                          <td>● Extent of protected areas</td>
+                          <td></td>
+                      </tr>
+                  </tbody>
+
+
+                </table>
+              </div>
+          </div>
+        </div>
+      </the-eco-available_services-selection>
+
+
+
+
+
+
+
+
+      <the-eco-total_service-selection v-if="ecoLine === 'total_service'">
+        <div class="row">
+          <div class="item">
+            <div class="jumbotron">
+              <table class="table table-bordered center top-border no-empty">
+                    
+                <thead>
+                   <tr>
+                          <th style="min-width: 250px;"></th>
+                          <th></th>
+                          <th>Forests</th>
+                          <th>Agro-ecosystems
+                              (cropland and
+                              grassland)</th>
+                          <th>Freshwater
+                              ecosystems
+                              (rivers,
+                              lakes, ground water, and
+                              wetlands)</th>
+                          <th>Marine
+                              ecosystems
+                              (Marine inlets and
+                              transitional waters,
+                              coastal
+                              zones, shelf
+                              ecosystems,
+                              and open ocean)</th>
+                      </tr>
+                </thead>
+                  <tbody>
+                    
+                      <tr>
+                          <td>Provisioning
+                              services</td>
+                          <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+                          <td>13</td>
+                          <td>9</td>
+                          <td>6</td>
+                          <td>0</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#ffcc4c;">●</td>
+                          <td>18</td>
+                          <td>8</td>
+                          <td>12</td>
+                          <td>3</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#fb5759;">●</td>
+                          <td>7</td>
+                          <td>3</td>
+                          <td>8</td>
+                          <td>0</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#808080;">●</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                      </tr>
+                      <tr>
+                          <td>Regulation and
+                              maintenance services</td>
+                          <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+                          <td>5</td>
+                          <td>8</td>
+                          <td>5</td>
+                          <td>13</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#ffcc4c;">●</td>
+
+                          <td>15</td>
+                          <td>14</td>
+                          <td>22</td>
+                          <td>1</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#fb5759;">●</td>
+
+                          <td>30</td>
+                          <td>6</td>
+                          <td>7</td>
+                          <td>4</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#808080;">●</td>
+
+                          <td>13</td>
+                          <td>0</td>
+                          <td>11</td>
+                          <td>3</td>
+                      </tr>
+                      <tr>
+                          <td>Cultural services</td>
+                          <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+
+                          <td>0</td>
+                          <td>1</td>
+                          <td>3</td>
+                          <td>1</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#ffcc4c;">●</td>
+
+                          <td>6</td>
+                          <td>12</td>
+                          <td>12</td>
+                          <td>1</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#fb5759;">●</td>
+
+                          <td>10</td>
+                          <td>6</td>
+                          <td>22</td>
+                          <td>0</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td style="font-size: 2rem;line-height:1;padding: 0;color:#808080;">●</td>
+
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>5</td>
+                      </tr>
+                      <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td>Total number of
+                              indicators</td>
+                          <td style="border-color:#e0e0e0!important;"> </td>
+                          <td>117</td>
+                          <td>67</td>
+                          <td>110</td>
+                          <td>33</td>
+                      </tr>
+                      <tr>
+                          <td>Share of green
+                              indicators</td>
+                          <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+
+                          <td>15%</td>
+                          <td>27%</td>
+                          <td>13%</td>
+                          <td>42%</td>
+                      </tr>
+                  </tbody>
+
+                </table>
+              </div>
+          </div>
+        </div>
+      </the-eco-total_service-selection>
+
+      <the-eco-urban_service-selection v-if="ecoLine === 'urban_service'">
+        <div class="row">
+          <div class="item">
+            <div class="jumbotron" style="padding: 0;">
+              <table class="table table-bordered middle" style="margin-bottom: 0;">
+                    
+                <thead>
+                   <tr>
+                          <th style="max-width: 70px;">CICES Section</th>
+                          <th>CICES Class</th>
+                          <th>Class type (urban ecosystem services)</th>
+                          <th>Service providing unit (SPU)</th>
+                          <th>Demand</th>
+                      </tr>
+                </thead>
+                <tbody style="background: #f2b899">
+                  <tr>
+                    <td rowspan="5">Provisioning</td>
+                    <td>Cultivated crops</td>
+                    <td>Vegetables produced by urban allotments and in and the cummuting zone</td>
+                    <td>Crop fields, fruit trees, private and public gardens</td>
+                    <td rowspan="5">Consumption</td>
+                  </tr>
+                  <tr>
+                    <td>Surface water for drinking</td>
+                    <td></td>
+                    <td rowspan="4"> Watershed</td>
+                  </tr>
+                  <tr>
+                    <td>Ground water for drinking</td>
+                    <td></td>
+                  </tr>
+                   <tr>
+                    <td>Surface water for non-drinking purposes</td>
+                    <td></td>
+                  </tr>
+                   <tr>
+                    <td>Ground water for non-drinking purposes</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+          
+                <tbody style="background: #a1cb7f">
+                  <tr>
+                    <td rowspan="7">Regulating</td>
+                    <td>Filtration/sequestration/storage/accumulation by ecoystems</td>
+                    <td>Regulation of air quality by urban trees and forests</td>
+                    <td>Forest, trees, shrubs</td>
+                    <td>Risk of exposure to pollutant concentraton beoyond thresholds</td>
+                  </tr>
+                  <tr>
+                    <td>Global climate regulation by reduction of greenhouse gas concentration</td>
+                    <td>Climate regulation by reduction of CO2</td>
+                    <td>Vegetation, soil</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Micro and regional climate regulation</td>
+                    <td>Urban temperature regulation</td>
+                    <td>Forest, trees, shrub, herbs, lawns, wetlands, water bodies</td>
+                    <td>Risk of exposure to high temperatures</td>
+                  </tr>
+                  <tr>
+                    <td>Mediation of smell/noise/visual impacts</td>
+                    <td>Noise mitigated by urban vegetation</td>
+                    <td>Forest, trees, shroubs, vegetated surfaces</td>
+                    <td>Risk of exposure to noise</td>
+                  </tr>
+                  <tr>
+                    <td>Hydrological cycle and water flow maintenance</td>
+                    <td>Water flow regulation and run off mitigation</td>
+                    <td>Trees, shrubs, vegetated and permeable surfaces</td>
+                    <td>Risk for flood sensitive areas or land use</td>
+                  </tr>
+                  <tr>
+                    <td>Flood control</td>
+                    <td></td>
+                    <td>Wetlands</td>
+                    <td>Exposure to flooding</td>
+                  </tr>
+                  <tr>
+                    <td>Pollination and seed dispersal</td>
+                    <td>Insect pollination</td>
+                    <td>Crop fields, fruit trees, private and public gardens</td>
+                    <td>Dependency on insect pollination</td>
+                  </tr>
+                </tbody>
+                <tbody style="background:#93d6ee">
+                  <tr>
+                    <td rowspan="2">Cultural</td>
+                    <td>Physical use of land/seascapes in different environmental settings</td>
+                    <td>Nature based recreation</td>
+                    <td rowspan="2">Parks, gardens, forest, trees, agricultural areas in the commuting zone, wetlands, water bodies, waterways, Natura 2000 Sites</td>
+                    <td rowspan="2">Preferences; potential and direct use</td>
+                  </tr>
+                  <tr>
+                    <td>Scientific <hr style="    border-style: inherit;
+                      border-color: #e0e0e0;"> Educational <hr style="    border-style: inherit;
+                      border-color: #e0e0e0;"> Heritage,cultural</td>
+                    <td>Nature based education</td>
+                  </tr>
+                </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+      </the-eco-urban_service-selection>
+
+
+
+
+      <the-eco-water_services-selection v-if="ecoLine === 'water_service'">
+        <div class="row full">
+          <div class="item full">
+            <div class="jumbotron full">
+              <table class="table table-bordered full-width full-bordered">
+                    <thead>
+                           <tr>
+                          
+                            <th>Division</th>
+                          
+                            <th>Group</th>
+                          
+                            <th>Class</th>
+                          
+                            <th>Lakes</th>
+                          
+                            <th>Rivers</th>
+                          
+                            <th>Ground water</th>
+                          
+                            <th>Wetlands</th>
+                          
+                        </tr>
+                    </thead>
+                    <tbody>
+                      
+                     
+                      
+                        <tr>
+                          
+                            <td rowspan="8">Nutrition</td>
+                          
+                            <td rowspan="6">Biomass</td>
+                          
+                            <td>Cultivated crops</td>
+                          
+                            <td colspan="4"></td>
+                          
+                          
+                        </tr>
+                      
+                        <tr>
+                          
+                          
+                            <td>Reared animals and their outputs</td>
+                          
+                            <td colspan="4"></td>
+                          
+                          
+                        </tr>
+                      
+                        <tr>
+                          
+                          
+                            <td>Wild plants, algae and their outputs</td>
+                          
+                            <td colspan="2"><span style="color: grey">●</span> Wild plants used in gastronomy, cosmetic, pharmaceutical uses (data on industries collecting the plants)</td>
+                          
+                            <td></td>
+                          
+                            <td><b>see lakes and rivers</b></td>
+                          
+                        </tr>
+                      
+                        <tr>
+                          
+                          
+                            <td>Wild animals and their outputs</td>
+                          
+                            <td colspan="2"><span style="color:orange">●</span> Fish production (catch in tonnes by commercial and recreational fisheries) 
+                              <br><span style="color:red;">●</span> Number of fisherman and hunters of waterfowls (anglers, professional and amateur fishermen)
+                              <br><span style="color:red;">●</span> Status of fish population (Species composition, Age Structure, Biomass kg/ha)
+                            </td>
+                          
+                          
+                            <td></td>
+                          
+                            <td><b>see lakes and rivers</b></td>
+                          
+                        </tr>
+              
+                  
+        
+                        <tr>
+                          
+                            <td>Plants and algae from in-situ aquaculture</td>
+                          
+                            <td colspan="4"></td>
+                         
+                          
+                        </tr>
+                      
+                        <tr>
+                          
+                          
+                            <td>Animals from in-situ aquaculture</td>
+                          
+                            <td colspan="2"><span style="color:green;">●</span> Freshwater aquaculture production (e.g. sturgeon and caviar production)</td>
+                          
+                          
+                            <td></td>
+                          
+                            <td></td>
+                          
+                        </tr>
+                 
+                        <tr>
+                          
+                            <td rowspan="2">Water</td>
+                          
+                            <td rowspan="2">
+                              <div style="float: left;">Surface water for drinking <hr style="margin-bottom: 1.5rem;margin-top: 1.5rem; border-style: solid; border-color: #e0e0e0;"> Ground water for drinking </div>
+                              <div style="width: 30%; float: right"><span style="color:red">●</span> Water exploitation index (WEI)</div></td>
+                          
+                            <!-- <td rowspan="2"></td> -->
+                            <td colspan="2"><span style="color:orange;">●</span> Water consumption for drinking<br><span style="color:orange;">●</span> Surface water availability<br><span style="color:green;">●</span> Water abstracted</td>
+                            <td></td>
+                          
+                            <td><span style="color:red">●</span> Nitrate-vulnerable zones</td>
+                          
+                        </tr>
+                      
+                        <tr>
+                          
+                          
+                          
+                          
+                            <td colspan="2"></td>
+                          
+                            <td><span style="color:orange;">●</span> Ground water bodies <br> <span style="color:orange;">●</span> Ground water abstraction</td>
+                          
+                            <td></td>
+                          
+                        </tr>
+               
+                      
+                      
+                        <tr>
+                          
+                            <td rowspan="5">Materials</td>
+                          
+                            <td rowspan="3">Biomass</td>
+                          
+                            <td>Fibres and other materials from plants, algae and animals for direct use or processing</td>
+                          
+                            <td colspan="3"></td>
+                          
+                            <td><span style="color:green">●</span> Wood produced (tons or volume) by riparian forest <br> <span style="color:green">●</span> Surface of exploited wet forests (e.g. poplars) and reeds</td>
+                          
+                        </tr>
+                      
+                      
+                        <tr>
+                          
+                            <td>Materials from plants, algae and animals for agricultural use</td>
+                          
+                            <td colspan="4"></td>
+                          
+                        </tr>
+                      
+                        <tr>
+                          
+                            <td>Genetic materials from all biota</td>
+                          
+                            <td colspan="4"></td>
+                          
+                        </tr>
+                      
+                    
+                        <tr>
+                          
+                            <td rowspan="2">Water</td>
+                          
+                           <td rowspan="2">
+                              <div style="float: left;width: 60%">Surface water for non-drinking purposes <hr style="margin-bottom: 1.5rem;margin-top: 1.5rem; border-style: solid; border-color: #e0e0e0;"> Ground water for non-drinking purposes </div>
+                              <div style="width: 30%; float: right"><span style="color:red">●</span> Water exploitation index (WEI)</div></td>
+                          
+                          
+                            <td colspan="2"><span style="color:orange;">●</span> Water use per sector<br><span style="color:orange;">●</span> Surface water availability<br><span style="color:green;">●</span> Water abstracted<br> <span style="color:red">●</span> Volume of water bodies</td>
+                          
+                            <td></td>
+                            <td><span style="color:green">●</span> Surface of flood-prone areas</td>
+                          
+                        </tr>
+                      
+                        <tr>
+                          
+                          
+                            <td></td>
+                            <td></td>
+                          
+                            <td><span style="color:orange;">●</span> Ground water bodies <br> <span style="color:orange;">●</span> Ground water abstraction</td>
+                          
+                            <td></td>
+                          
+                        </tr>
+                      
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td rowspan="3">Energy</td>
+                            <td rowspan="2">Biomass-based energy
+                                sources</td>
+                            <td>Plant-based resources</td>
+                            <td colspan="2"></td>
+                            <td></td>
+                            <td><span style="color:orange;">●</span> Firewood produced by
+                                riparian forests</td>
+                        </tr>
+                        <tr>
+                            <td>Animal-based resources</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td>Mechanical energy</td>
+                            <td>Animal-based energy</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="5">Mediation of waste, toxics and other nuisances</td>
+                            <td rowspan="2">Mediation by biota</td>
+                            <td>Bio-remediation by micro-organisms, algae, plants,
+                                and animals</td>
+                            <td colspan="2" rowspan="3">● Indicators on water quality
+                                (microbiological data for bathing waters,
+                                BOD5 nitrate conc, phosphate conc,
+                                oxygen conditions, saprobiological status)
+                                <br>● Nutrient loads <br>● Ecological status
+                                <br>● Trophic status <br>● Area occupied by
+                                riparian forests <br>● Number and efficiency
+                                of treatment plants <br>● Waste treated</td>
+                            <td rowspan="3">● Indicators on
+                                groundwater
+                                quality (NO3,
+                                pesticide, trace
+                                metals, emerging
+                                pollutants, etc.
+                                evolution in GW)</td>
+                            <td rowspan="3">● Carbon storage per unit
+                                of area
+                                <br>● Potential mineralization
+                                or decomposition
+                                <br>● Ecological status
+                                <br>● Nutrient concentration <br>●
+                                Nutrient retention</td>
+                        </tr>
+                        <tr>
+                            <td>Filtration/sequestration/storage/accumulation by
+                                micro-organisms, algae, plants, and animals</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3">Mediation by ecosystems</td>
+                            <td>Filtration/sequestration/storage/accumulation by
+                                ecosystems</td>
+                        </tr>
+                        <tr>
+                            <td>Dilution by atmosphere, freshwater and marine
+                                ecosystems</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td>Mediation of smell/noise/visual impacts</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="6">Mediation of flows</td>
+                            <td rowspan="2">Mass flows</td>
+                            <td>Mass stabilisation and control of erosion rates</td>
+                            <td></td>
+                            <td></td>
+                            <td rowspan="4">● GW level
+                                evolution</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Buffering and attenuation of mass flows</td>
+                            <td colspan="2">● Sediment retention</td>
+                            <td>● Sediment retention</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Liquid flows</td>
+                            <td>Hydrological cycle and water flow maintenance</td>
+                            <td>Volume of water
+                                (or snow)</td>
+                            <td>Hydrological flow
+                                data</td>
+                            <td>Surface of wetlands</td>
+                        </tr>
+                        <tr>
+                            <td>Flood protection</td>
+                            <td colspan="2">● Holding capacity flood risk maps
+                                <br>● Conservation of river and lakes banks</td>
+                            <td>● Water holding capacity
+                                of soils
+                                <br>● Floodplains areas (and
+                                record of annual floods)
+                                <br>● Area of wetlands located
+                                in flood risk zones <br>●
+                                Conservation status of
+                                riparian wetlands</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Gaseous / air flows</td>
+                            <td>Storm protection</td>
+                            <td colspan="3"></td>
+                            <td>● Conservation status of
+                                wetlands
+                                Area of wetlands,
+                                vegetation cover?</td>
+                        </tr>
+                        <tr>
+                            <td>Ventilation and transpiration</td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="10">Maintenance of
+                                physical,
+                                chemical,
+                                biological
+                                conditions</td>
+                            <td rowspan="2">Lifecycle maintenance,
+                                habitat and gene pool
+                                protection</td>
+                            <td>Pollination and seed dispersal</td>
+                            <td colspan="2"></td>
+                            <td rowspan="2">● GW level</td>
+                            <td>Beekeeping value of
+                                wetlands</td>
+                        </tr>
+                        <tr>
+                            <td>Maintaining nursery populations and habitats</td>
+                            <td colspan="2">● Biodiversity value (Species diversity or
+                                abundance, endemics or red list species
+                                and spawning location)
+                                <br>● Ecological status Morphological status</td>
+                            <td>Biodiversity value?</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Pest and disease control</td>
+                            <td>Pest control</td>
+                            <td colspan="2">● Alien species (Introduced riparian and
+                                aquatic plants
+                                <br>● Number of introduced aquatic invertebrates
+                                    <br>● Number of introduced vertebrates in
+                                    rivers and riparian areas</td>
+                            <td></td>
+                            <td><b>see lakes and rivers</b></td>
+                        </tr>
+                           <tr>
+                                <td>Disease control</td>
+                                <td colspan="4"></td>
+                            </tr>
+
+                            <tr>
+                                <td rowspan="2">Soil formation and
+                                    composition</td>
+                                <td>Weathering processes</td>
+                                <td colspan="2">● Fluvisols surface</td>
+                                <td></td>
+                                <td>● Hydromorphic soils
+                                    (Presence/absence) Surface
+                                    of floodplains</td>
+                            </tr>
+                            <tr>
+                                <td>Decomposition and fixing processes</td>
+                                <td colspan="3"></td>
+                                <td>● Potential mineralization,
+                                    decomposition, etc.</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">Water conditions</td>
+                                <td>Chemical condition of freshwaters</td>
+                                <td colspan="2">● Chemical status <br>● Ecological status</td>
+                                <td rowspan="2">● Indicators of GW
+                                    quality</td>
+                                <td>● Chemical status
+                                    <br>● Ecological status
+                                    <br>● Potential of water
+                                    purification of wetlands</td>
+                            </tr>
+                            <tr>
+                                <td>Chemical condition of salt waters</td>
+                                <td colspan="2"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">Atmospheric composition
+                                    and climate regulation</td>
+                                <td>Global climate regulation by reduction of greenhouse
+                                    gas concentrations</td>
+                                <td colspan="2">● C sequestration (Annual increase in <br>●
+                                    Carbon sequestration in living biomass of
+                                    riparian forest <br>● Carbon sequestered by
+                                    plantations of Populus <br>● Organic carbon
+                                    stored in fluvisols)</td>
+                                <td>● C sequestration
+                                    (Evolution of
+                                    annual volumes of
+                                    CO2 injected, <br>●
+                                    Number of sites for
+                                    CO2 deep
+                                    injections)</td>
+                                <td>see rivers and lakes</td>
+                            </tr>
+                            <tr>
+                                <td>Micro and regional climate regulation</td>
+                                <td colspan="2"></td>
+                                <td>● GW level</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="7">Physical and
+                                    intellectual
+                                    interactions
+                                    with biota,
+                                    ecosystems,
+                                    and land-
+                                    /seascapes
+                                    [environmen
+                                    tal settings]</td>
+                                <td rowspan="2">Physical and experiential
+                                    interactions</td>
+                                <td>Experiential use of plants, animals and land-
+                                    /seascapes in different environmental settings</td>
+                                <td colspan="2">● Number of visitors (to National Parks
+                                    including lakes or rivers)
+                                    <br>● National Parks and Natura 2000 sites
+                                    <br>● Known bird watching sites Waterfowl</td>
+                                <td></td>
+                                <td>● Number of visitors
+                                    (waterfowl hunters and
+                                    fishermen, <br>● Visitors to
+                                    National Parks or protected
+                                    areas including wetlands)
+                                    <br>● Known bird watching
+                                    sites <br>● Waterfowl
+                                    <br>● Tourism revenue</td>
+                            </tr>
+                            <tr>
+                                <td>Physical use of land-/seascapes in different
+                                    environmental settings</td>
+                                <td colspan="2">● Number of visitors
+                                    <br>● bathing areas and Number beaches <br>●
+                                    Fishing reserves, <br>● Fish abundance, <br>● Fish
+                                    monetary value from angling,
+                                    <br>● Number fishing licenses, <br>● Quality of
+                                    fresh waters for fishing</td>
+                                <td>● Number of
+                                    visitors (to thermal,
+                                    mineral and mud
+                                    springs and
+                                    beaches, to Natural
+                                    Reserve areas)
+                                    speleology sites</td>
+                                <td>● Number of visitors
+                                    (waterfowl hunters and
+                                    fishermen)
+                                    <br>● Number of fishing
+                                    licenses <br>● Tourism revenue</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="5">Intellectual and
+                                    representative interactions</td>
+                                <td>Scientific</td>
+                                <td colspan="4">● Monitoring sites (by scientists)
+                                    <br>● Number of scientific projects, articles, studies <br>● Classified sites (world heritage, label
+                                    European tourism)</td>
+                            </tr>
+                            <tr>
+                                <td>Educational</td>
+                                <td colspan="4">● Number of visitors <br> ● National Parks and Natura 2000 sites</td>
+                            </tr>
+                            <tr>
+                                <td>Heritage, cultural</td>
+                                <td colspan="4">● Number of visitors <br>● Natural heritage and cultural sites  <br>● Number of annual cultural activities organise</td>
+                            </tr>
+                              <tr>
+                                <td>Entertainment</td>
+                                <td colspan="4">Number of visitors  (surface or number of wetlands located next to a bike path) </td>
+                            </tr>
+                             <tr>
+                                <td>Aesthetic</td>
+                                <td colspan="4">● Number of visitors  <br>● Contrasting landscapes (lakes close to mountains)  <br>● Proximity to urban areas of scenic rivers or lake </td>
+                            </tr>
+                            <tr>
+                              <td rowspan="4">Spiritual, symbolic and other interactions with biota, ecosystems, and land/seascapes [environmen tal settings]</td>
+                              <td rowspan="2">Spiritual and/or emblematic </td>
+                              <td>Symbolic</td>
+                              <td colspan="2">● National species or habitat types</td>
+                              <td>● Number of visitors (to places where springs and streams with GW origin made them historic and religious sites</td>
+                              <td>● National species or habitat types </td>
+                            </tr>
+                            <tr>
+                              <td>Sacred and/or religious</td>
+                              <td colspan="2">● sacred/religious sites (catastrophic events, religious places) </td>
+                              <td></td>
+                              <td>● sacred/religious sites (catastrophic events, religious places) </td>
+                            </tr>
+                            <tr>
+                              <td rowspan="2">Other cultural outputs</td>
+                              <td>Existence</td>
+                              <td colspan="2">● Number of visitors (to National Parks including lakes)  <br>● Number of fishing licenses</td>
+                              <td>● Number of visitors (to hot mineral spring waters) </td>
+                              <td><b>See rivers and lakes </b></td>
+                            </tr>
+                            <tr>
+                              <td>Bequest</td>
+                              <td colspan="2">● Number of association registered on animals, plants, environment, naturism </td>
+                              <td></td>
+                              <td><b>See rivers and lakes</b><br> Social perception of wetlands </td>
+                            </tr>
+                    </tbody>
+
+                </table>
+              </div>
+          </div>
+        </div>
+      </the-eco-water_services-selection>
+
+
+
 
       <the-eco-pressure-selection v-if="ecoLine === 'pressure'">
         <div class="row">

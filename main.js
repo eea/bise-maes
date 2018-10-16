@@ -8139,7 +8139,7 @@ const biseEco = [
   {
     "code": "pressure_header",
     "name": "Pressure",
-    "type": "header"
+    "type": "header",
   },
   {
     "code": "pressure",
@@ -9017,6 +9017,48 @@ let app = new Vue({
   },
 
   methods: {
+    ecosystemItemFunction(code) {
+      switch (code) {
+        case 'pressure_header':
+          this.handleEcoPressureLineClick()
+          break;
+        case 'ecosystem_header':
+          this.handleEcoConditionLineClick();
+          break;
+        case 'services_header':
+          this.handleEcoServicesLineClick();
+          break;
+        default:
+          // statements_def
+          break;
+      }
+    },
+
+    ecosystemClass(code) {
+      switch (code) {
+        case 'pressure_header':
+          if(this.ecoLine === 'pressure'){
+            return 'selected'
+          }
+          break;
+        case 'ecosystem_header':
+          if(this.ecoLine === 'condition'){
+            return 'selected'
+          }
+          break;
+        case 'services_header':
+          if(['services', 'water_service', 'marine_service', 'available_service'].includes(this.ecoLine)) {
+            return 'selected'
+          }
+          break;
+        default:
+          // statements_def
+          break;
+      }
+    },
+
+
+
     initArrowStyles() {
       this.biseEco.map((eco) => {
         this.arrowsStyle.eco[eco.code] = notSelectedColour;
@@ -9027,8 +9069,6 @@ let app = new Vue({
     },
     manageArrows(expr, ecoItem, headerItem) {
       let tempArrowStyle = JSON.parse(JSON.stringify(this.arrowsStyle));
-
-      console.log(expr,ecoItem,headerItem)
       switch (expr) {
         case 'colourAllHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
@@ -9038,13 +9078,39 @@ let app = new Vue({
           });
           tempArrowStyle.eco[ecoItem] = selectedColour;
           break;
+          case 'colourOnlyUrban':
+            Object.keys(tempArrowStyle.header).map((key) => {
+              if(key === 'urban') {
+                tempArrowStyle.header[key] = selectedColour;
+              }
+            });
+            tempArrowStyle.eco[ecoItem] = selectedColour;
+          break;
+          case 'colourAllAllHeaders':
+            Object.keys(tempArrowStyle.header).map((key) => {
+                tempArrowStyle.header[key] = selectedColour;
+            });
+            tempArrowStyle.eco[ecoItem] = selectedColour;
+          break;
         case 'colourAllWaterHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
-            console.log(key)
+
             if(key === 'marine') {
               tempArrowStyle.header[key] = notSelectedColour;
             } else {
               tempArrowStyle.header[key] = selectedColour;
+            }
+
+          });
+          tempArrowStyle.eco[ecoItem] = selectedColour;
+          break;
+        case 'colourOnlyWaterHeaders':
+          Object.keys(tempArrowStyle.header).map((key) => {
+
+            if(['rivers','wetland'].includes(key)) {
+              tempArrowStyle.header[key] = selectedColour;
+            } else {
+              tempArrowStyle.header[key] = notSelectedColour;
             }
 
           });
@@ -9124,6 +9190,13 @@ let app = new Vue({
       this.ecoLine = 'pressure';
       this.manageArrows('colourAllHeaders', 'pressure', null);
     },
+
+    handleEcoServicesLineClick(){
+      this.resetSelected();
+      this.ecoLine = 'services';
+    },
+
+
     handleEcoConditionLineClick() {
       this.resetSelected();
 
@@ -9139,6 +9212,35 @@ let app = new Vue({
       this.manageArrows('colourAllMarineHeaders', this.selectedEco, null);
       this.ecoLine = 'marine';
     },
+
+    handleSelectedWaterEcoServices(){
+      this.manageArrows('colourOnlyWaterHeaders', this.selectedEco, null);
+      this.ecoLine = 'water_service';
+    },
+
+    handleSelectedMarineEcoServices(){
+      this.manageArrows('colourAllMarineHeaders', this.selectedEco, null);
+      this.ecoLine = 'marine_service';
+    },
+
+    handleSelectedTotalServices(){
+
+        this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+        this.ecoLine = 'total_service';
+
+    },
+
+    handleSelectedAvailableServices(){
+
+        this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+        this.ecoLine = 'available_service';
+    },
+
+    handleSelectedUrbanServices(){
+        this.manageArrows('colourOnlyUrban', this.selectedEco, null);
+        this.ecoLine = 'urban_service';
+    },
+
     handleMouseEnterHeader(ev) {
       this.selectedHeaderTemp = ev;
     },
@@ -9217,6 +9319,7 @@ let app = new Vue({
     showTable() {
       let response = !this.selectedItem && !this.selectedHeaderItem && !this.selectedEcoItem.length > 0;
       response = !this.ecoLine && response;
+
 
       return response;
     },

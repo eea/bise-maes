@@ -1005,11 +1005,23 @@ button{
   cursor: pointer;
 }
 
+.large-btn {
+  width: 100%;
+  border-radius: 0;
+  background: #eee;
+  margin-bottom: .5rem;
+}
+
+.large-btn:last-of-type {
+  margin-bottom: 0;
+}
 
 .large-btn.left {
     width: 50%;
     background: #ff9310;
     color: white;
+  margin-bottom: 0;
+
     border-radius: 0;
 }
 
@@ -1019,8 +1031,58 @@ button{
     color: white;
     float: right;
     border-radius: 0;
+  margin-bottom: 0;
+
 }
 
 .large-btn:hover {
   text-shadow:  0px 0px 3px #444;
+}
+
+.table.no-empty td:empty {
+  border-color: transparent!important;
+}
+
+.table.full-width td {
+  min-width: 150px;
+}
+
+.jumbotron.full {
+  background: #fcefda;
+  overflow: auto;
+}
+
+.row.full {
+  position: relative;
+}
+
+
+.item.full {
+  position: absolute;
+  width: 100%;
+}
+
+.table.full td > br{
+  display: none;
+}
+
+.table.center tr td:not(:first-of-type) {
+  text-align: center;
+}
+
+.table.top-border tr td {
+      border-top: 1px solid #e0e0e0;
+      border-bottom: none;
+}
+
+.table.middle tr td {
+  vertical-align:  middle;
+}
+
+.table.full-width th {
+    text-align: left;
+}
+
+.table.full-bordered td{
+  border: 1px solid #e0e0e0;
 }

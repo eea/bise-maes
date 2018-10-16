@@ -243,17 +243,17 @@
 
       <the-eco-selection v-if="ecoLine === 'condition'">
         <div class="row">
-          <div class="item">
+          <div class="item" style="padding: 0;overflow: hidden;border: none;">
 
-            <div class="jumbotron">
+            <div class="card">
               <button
-                class="btn primary"
+                class="btn primary large-btn left"
                 @click="handleSelectedWaterEcoCondition()"
               >
                 Terrestrial and freshwater
               </button>
               <button
-                class="btn primary"
+                class="btn primary large-btn right"
                 @click="handleSelectedMarineEcoCondition()"
               >
                 Marine

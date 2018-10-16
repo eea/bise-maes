@@ -9032,7 +9032,9 @@ let app = new Vue({
       switch (expr) {
         case 'colourAllHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
-            tempArrowStyle.header[key] = selectedColour;
+            if(key !== 'marine') {
+              tempArrowStyle.header[key] = selectedColour;
+            }
           });
           tempArrowStyle.eco[ecoItem] = selectedColour;
           break;
@@ -9041,7 +9043,7 @@ let app = new Vue({
             console.log(key)
             if(key === 'marine') {
               tempArrowStyle.header[key] = notSelectedColour;
-            } else if (['rivers', 'wetland'].includes(key)) {
+            } else {
               tempArrowStyle.header[key] = selectedColour;
             }
 

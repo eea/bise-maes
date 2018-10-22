@@ -1,4 +1,2139 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+<template>
+  <div id="app">
+    <div class="row pad-bot-10">
+
+      <div class="col-4 menu-left">
+        <p class="instrument-heading-text">Mapping and assessment of ecosystems and their services</p>
+
+        <transition name="fade">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            v-if="!showTable()"  
+            @click="resetSelected"
+            >Reset
+          </button>
+        </transition>
+      </div>
+      <!-- actual heading -->
+      <div
+        v-for="header in biseHeader"
+        class="col-1-sm menu"
+        @mouseenter="handleMouseEnterHeader(header.code)"
+        @mouseleave="handleMouseLeaveHeader"
+        @click="handleHeaderClick(header)"
+        :class="{ 'accentuate': (selectedHeaderTemp === header.code), 'selected': arrowsStyle.header[header.code] !== 'lightgrey'}"
+      >
+        <div class="instrument-heading-wrap">
+          <p class="instrument-heading-text">{{header.name}}</p>
+          <p
+            class="instrument-heading-bar"
+            :style="{ 'background-color': header.colour }"
+          ></p>           
+        </div>
+
+        <svg
+          aria-hidden="true"
+          data-prefix="fas"
+          data-icon="arrow-alt-down"
+          role="img"
+          viewBox="0 0 448 512"
+          class="arrow-top"
+        >
+        <!-- <path
+          :style="{ 'fill': selectedHeader === header.code ? selectedColour : notSelectedColour}"
+          d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
+        ></path> -->
+          <path
+            :style="{ 'fill': arrowsStyle.header[header.code]}"
+            d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
+          ></path>
+      </svg>
+      </div>
+    </div>
+
+    <!-- lateral ecosystem 0y-->
+    <div class="row pad-bot-10">
+
+      <!-- ecosystem-heading -->
+      <div class="col-4 ecosystem-heading">
+      <!--   <div class="col-1 lateral-text-wrapper">
+          <div
+            class="lateral-text lateral-text-ontop"
+            :class="{'selected': ecoLine === 'pressure'}"
+            @click="handleEcoPressureLineClick()"
+          >Pressure</div>
+          <div
+            class="lateral-text lateral-text-onbottom"
+            :class="{'selected': ecoLine && ecoLine !== 'pressure'}"
+            @click="handleEcoConditionLineClick()"
+          >Ecosystem condition</div>          
+        </div> -->
+
+        <!-- <canvas class="col-1-sm" id="myCanvas" width="50" height="550"></canvas> -->
+        <div class="ecosystem-heading-content">
+          <div 
+            v-for="ecosystemItem in biseEco"
+            v-if="ecosystemItem.type != 'header'"
+            class="ecosystem-item"
+            @mouseenter="handleMouseEnterEco(ecosystemItem.code)"
+            @mouseleave="handleMouseLeaveEco"
+            @click="handleEcoClick(ecosystemItem)"
+            :class="{ 'accentuate': (selectedEcoTemp === ecosystemItem.code), 'selected': arrowsStyle.eco[ecosystemItem.code] !== 'lightgrey'}"
+          >
+            <div class="ecosystem-wrap">
+              <p class="ecosystem-text">{{ecosystemItem.name}}</p>
+              <!-- <p class="ecosystem-bar col-1-sm"></p> -->
+            </div>
+            <svg 
+              aria-hidden="true"
+              data-prefix="fas"
+              data-icon="arrow-alt-right"
+              role="img"
+              viewBox="0 0 448 512"
+              class="arrow-right"
+            >
+            <!-- <path
+              :style="{ 'fill': selectedEco === ecosystemItem.code ? selectedColour : notSelectedColour}"
+              d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
+            ></path> -->
+              <path
+                :style="{ 'fill': arrowsStyle.eco[ecosystemItem.code]}"
+                d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
+              ></path>
+            </svg>
+
+          </div>
+          <div class="ecosystem-item" v-else>
+            <div class="ecosystem-wrap header"
+              :class="ecosystemClass(ecosystemItem.code)"
+              @click="ecosystemItemFunction(ecosystemItem.code)"
+            >
+            <div class="ecosystem-text">
+               {{ecosystemItem.name}}
+            </div>
+          </div>
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- the table -->
+      <the-table v-show="showTable()">
+        <div
+          v-for="header in biseHeader"
+          class="col-1-sm menu"
+          :style="{ 'background-color': header.colour }"
+          :class="{ 'accentuate': (selectedHeader === header.code)}"
+        >
+          <ul>
+            <li
+              v-for="ecosystemItem in biseEco"
+              :class="{
+                'highlight-li': (selectedEcoTemp === ecosystemItem.code) || (selectedHeaderTemp === header.code),
+                'not-visible': !bise[header.code][ ecosystemItem.code]
+              }"
+              @click="handleSelected(header.code,  ecosystemItem.code)"
+            ></li>
+          </ul>
+        </div>        
+      </the-table>
+
+      <the-item v-if="selectedItem">
+        <div class="row">
+          <div class="item">
+
+            <div class="wrapper-item">
+              <div 
+                v-if="showClassNameIndicator()"
+                class="col-2"
+              >
+                Class
+              </div>
+              <div class="col-10">Indicator</div>
+            </div>
+
+            <div class="jumbotron">
+              <div
+                v-for="itemClass in selectedItem.details.class"
+                class="detail clearfix"
+              >
+                <div class="col-12">
+                  <div class="lead col-2">
+                    <p>{{itemClass.name}}</p>
+                  </div>
+                  <ul class="col-10">
+                    <li 
+                      v-for="(indicatorValue, indicatorKey) in itemClass.indicator"
+                      @click="handleClickIndicator(indicatorValue, indicatorKey)"
+                      class="indicator-li"
+                      :style="{ 'font-weight': indicatorValue.bold ? 'bold' : 'normal'}"
+                      :class="{ 'selected-indicator': selectedIndicators[indicatorKey] }"
+                    >{{indicatorValue.name}}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                    <!--    <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-item>
+
+      <the-eco-selection v-if="ecoLine === 'condition'">
+        <div class="row">
+          <div class="item" style="padding: 0;overflow: hidden;border: none;">
+
+            <div class="card">
+              <button
+                class="btn primary large-btn left"
+                @click="handleSelectedWaterEcoCondition()"
+              >
+                Terrestrial and freshwater
+              </button>
+              <button
+                class="btn primary large-btn right"
+                @click="handleSelectedMarineEcoCondition()"
+              >
+                Marine
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-selection>
+
+      <the-eco-selection v-if="ecoLine === 'services'">
+        <div class="row">
+          <div class="item" style="padding: 0;overflow: hidden;border: none;">
+
+            <div class="card">
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedWaterEcoServices()"
+              >
+                Indicators for ecosystem services delivered by freshwater ecosystems
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedMarineEcoServices()"
+              >
+                Indicators for ecosystem services delivered by marine ecosystems
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedTotalServices()"
+              >
+                Total number and break-down of ecosystem services indicators
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedAvailableServices()"
+              >
+                Available indicators for assessment of ecosystem services across different ecosystems
+              </button>
+              <button
+                class="btn primary large-btn"
+                @click="handleSelectedUrbanServices()"
+              >
+                Key urban ecosystem services
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-selection>
+
+      <the-eco-marine_services-selection v-if="ecoLine === 'marine_service'">
+        <div class="row full">
+          <div class="item full">
+            <div class="jumbotron full">
+              <table class="table table-bordered full-width full-bordered">
+                <thead>
+                  <tr>
+                    <th>Division</th>
+                    <th>Group</th>
+                    <th>Class</th>
+                    <th>Marine inlets and transitional waters</th>
+                    <th>Coastal waters</th>
+                    <th>Shelf waters</th>
+                    <th>Open Ocean</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td rowspan="8">Nutrition</td>
+                    <td rowspan="6">Biomass</td>
+                    <td>Cultivated crops</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Reared animals and their outputs</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Wild plants, algae and their outputs</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Harvest (ton/a)
+                    </td>
+                    <td colspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td>Wild animals and their outputs</td>
+                    <td>
+                      <span style="color: orange">●</span> Landings (ton)
+                    </td>
+                    <td></td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Landings (ton) 
+                      <span style="color: orange">●</span> CPUE (ton)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Plants and algae from in-situ aquaculture</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Harvest (ton/a)
+                    </td>
+                    <td colspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td>Animals from in-situ aquaculture</td>
+                    <td colspan="3">
+                      <span style="color: orange">●</span> Harvest (ton/a)
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Water</td>
+                    <td>Surface water for drinking</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Ground water for drinking</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="5">Materials</td>
+                    <td rowspan="3">Biomass</td>
+                    <td>Fibres and other materials from plants, algae and animals
+                        for direct use or processing</td>
+                    <td rowspan="2">
+                      <span style="color: orange">●</span> Harvest (ton/a)
+                    </td>
+                    <td colspan="3">
+                      <span style="color: orange">●</span> Landings (ton) 
+                      <span style="color: orange">●</span> Harvest (ton/a)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Materials from plants, algae and animals for agricultural use</td>
+                    <td colspan="3">
+                      <span style="color: orange">●</span> Landings (ton) 
+                      <span style="color: orange">●</span> Harvest (ton/a)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Genetic materials from all biota</td>
+                    <td colspan="4">
+                      <span style="color: grey">●</span> Patents (no.) 
+                      <span style="color: grey">●</span> Published articles (no.)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Water</td>
+                    <td>Surface water for non-drinking purposes</td>
+                    <td colspan="4" rowspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td>Ground water for non-drinking purposes</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="3">Energy</td>
+                    <td rowspan="2">Biomass-based
+                        energy sources</td>
+                    <td>Plant-based resources</td>
+                    <td rowspan="2" colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Animal-based resources</td>
+                  </tr>
+                  <tr>
+                    <td>Mechanical
+                        energy</td>
+                    <td>Animal-based energy</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="5">Mediation of waste, toxics
+                        and other nuisances</td>
+                    <td rowspan="2">Mediation by
+                        biota</td>
+                    <td>Bio-remediation by micro-organisms, algae, plants, and
+                        animals</td>
+                    <td rowspan="4" colspan="3">
+                      <span style="color: green;">●</span> Nutrient load to coast (ton/a) <br>
+                      <span style="color: green;">●</span> HM and POP deposition (ton/a) <br>
+                      <span style="color: green;">●</span> Oxyrisk
+                    </td>
+                    <td rowspan="4">
+                      <span style="color: green;">●</span> HM and POP deposition (ton/a) <br>
+                      <span style="color: green;">●</span> Oxyrisk
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Filtration/sequestration/storage/accumulation by micro-
+                        organisms, algae, plants, and animals</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="3">Mediation by
+                        ecosystems</td>
+                    <td>Filtration/sequestration/storage/accumulation by ecosystems</td>
+                  </tr>
+                  <tr>
+                    <td>Dilution by atmosphere, freshwater and marine ecosystems</td>
+                  </tr>
+                  <tr>
+                    <td>Mediation of smell/noise/visual impacts</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="6">Mediation of flows</td>
+                    <td rowspan="2">Mass flows</td>
+                    <td>Mass stabilisation and control of erosion rates</td>
+                    <td rowspan="2" colspan="2">
+                      <span style="color: green;">●</span>
+                        Composite indices based on extent
+                        of selected emerged, submerged and
+                        intertidal habitats, coastline slope and
+                        coastal geomorphology, wave regime,
+                        tidal range, relative sea level, storm
+                        surge
+                    </td>
+                    <td colspan="2" rowspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td>Buffering and attenuation of mass flows</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Liquid flows</td>
+                    <td>Hydrological cycle and water flow maintenance</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Flood protection</td>
+                    <td colspan="2">See buffering and attenuation of
+                        mass flows</td>
+                    <td colspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Gaseous / air
+                        flows</td>
+                    <td>Storm protection</td>
+                    <td rowspan="2" colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Ventilation and transpiration</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="10">Maintenance of physical,
+                        chemical, biological
+                        conditions</td>
+                    <td rowspan="2">Lifecycle
+                        maintenance,
+                        habitat and
+                        gene pool
+                        protection</td>
+                    <td>Pollination and seed dispersal</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Maintaining nursery populations and habitats</td>
+                    <td colspan="2">
+                      <span style="color: red">●</span> Submerged and intertidal
+                        habitats diversity (no.)<br>
+                      <span style="color: green;">●</span> Oxygen concentration (%)<br>
+                      <span style="color: green;">●</span> Turbidity (%)<br>
+                      <span style="color: green;">●</span> Species distribution (km2/ha) <br>
+                      <span style="color: red">●</span> Abundance and richness - at age (ton/a)<br>
+                      <span style="color: orange">●</span> Extent of marine protected areas (km2/ha)<br>
+                      <span style="color: red">●</span> Nursery areas (km2/ha)
+                    </td>
+                    <td>
+                      <span style="color: green;">●</span> Oxygen
+                        concentration (%)<br>
+                      <span style="color: green;">●</span> Turbidity (%) <br>
+                      <span style="color: green;">●</span> Species distribution (km2/ha) <br>
+                      <span style="color: red">●</span> Abundance and
+                        richness - at age
+                        (ton/a)<br>
+                      <span style="color: orange">●</span> Extent of marine
+                        protected areas
+                        (km2/ha) <br>
+                      <span style="color: red">●</span>Nursery areas
+                        (km2/ha)
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Pest and
+                        disease control</td>
+                    <td>Pest control</td>
+                    <td colspan="4">
+                      <span style="color: red">●</span> Presence (no.) and <br>
+                      <span style="color: red">●</span> Distribution (km2) of alien species
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Disease control</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Soil formation
+                        and
+                        composition</td>
+                    <td>Weathering processes</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Decomposition and fixing processes</td>
+                    <td colspan="3">
+                      <span style="color: grey">●</span> Nitrogen removal (%) <br>
+                      <span style="color: grey">●</span> Water residence time (months) <br>
+                      <span style="color: grey">●</span>
+                        Depth/water residence time (m/year)
+                      </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Water
+                        conditions</td>
+                    <td>Chemical condition of freshwaters</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Chemical condition of salt waters</td>
+                    <td colspan="4">
+                      <span style="color: green;">●</span> Nutrient load to coast (ton/yr) <br>
+                      <span style="color: green;">●</span> HM and POP loading (ton/yr) <br>
+                      <span style="color: green;">●</span> Oxyrisk
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Atmospheric
+                        composition
+                        and climate
+                        regulation</td>
+                    <td>Global climate regulation by reduction of greenhouse gas
+                        concentrations</td>
+                    <td colspan="4">
+                      <span style="color: green;">●</span> C stock (tonC) 
+                      <span style="color: green;">●</span> C sequestration (tonC/a) 
+                      <span style="color: green;">●</span> pH 
+                      <span style="color: green;">●</span> blue C (tonC) 
+                      <span style="color: green;">●</span> PP(ton C/year)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Micro and regional climate regulation</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="7">Physical and intellectual
+                        interactions with biota,
+                        ecosystems, and land-
+                        /seascapes [environmental
+                        settings]</td>
+                    <td rowspan="2">Physical and
+                        experiential
+                        interactions</td>
+                    <td>Experiential use of plants, animals and land-/seascapes in
+                        different environmental settings</td>
+                    <td colspan="3" rowspan="2">
+                      <span style="color: orange">●</span> Extent of marine protected areas (km2/ha) <br>
+                      <span style="color: green;">●</span> Presence of iconic/endangered species (no.) <br>
+                      <span style="color: grey">●</span> In-water activities occurrence (no.) <br>
+                      <span style="color: grey">●</span> Recreation trips (no./year)
+                    </td>
+                    <td rowspan="2">
+                      <span style="color: orange">●</span> Extent of marine
+                        protected areas
+                        (km2/ha) <br>
+                      <span style="color: green;">●</span> Presence of
+                        iconic/endangered
+                        species (no.)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Physical use of land-/seascapes in different environmental
+                        settings</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="5">Intellectual and
+                        representative
+                        interactions</td>
+                    <td>Scientific</td>
+                    <td rowspan="2" colspan="4">
+                      <span style="color: grey">●</span> Scientific studies (no.)
+                      <span style="color: grey">●</span> Documentaries, educational publications (no.) <br>
+                      <span style="color: grey">●</span> Visits to scientific and artistic visits exhibits (no.)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Educational</td>
+                  </tr>
+                  <tr>
+                    <td>Heritage, cultural</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Entertainment</td>
+                    <td rowspan="2" colspan="4">
+                      <span style="color: grey">●</span> Documentaries, educational publications (no.) <br>
+                      <span style="color: grey">●</span> Visits to scientific and artistic visits exhibits (no.)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Aesthetic</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Spiritual, symbolic and
+                        other interactions with</td>
+                    <td rowspan="2">Spiritual and/or
+                        emblematic</td>
+                    <td>Symbolic</td>
+                    <td colspan="4" rowspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td>Sacred and/or religious</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">biota, ecosystems, and
+                        land-/seascapes
+                        [environmental settings]</td>
+                    <td rowspan="2">Other cultural
+                        outputs<br> Bequest</td>
+                    <td>Existence</td>
+                    <td colspan="4" rowspan="2">
+                      <span style="color: orange">●</span> Extent of marine protected areas (km2/ha) <br>
+                      <span style="color: green;">●</span> Presence of iconic/endangered species (no.)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Bequest</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </the-eco-marine_services-selection>
+
+      <the-eco-available_services-selection v-if="ecoLine === 'available_service'">
+        <div class="row full">
+          <div class="item full">
+            <div class="jumbotron full">
+              <table class="table table-bordered full-width full-bordered">
+                <thead>
+                  <tr>
+                    <th>Ecosystem services</th>
+                    <th>Leader</th>
+                    <th>Indicator</th>
+                    <th>Marine systems</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>Cultivated crops</td>
+                    <td>Agro</td>
+                    <td>
+                      <span style="color: green;">●</span> Area and yields of food and feed crops
+                    </td>
+                    <td rowspan="8">
+                      <span style="color: orange;">●</span> Yield <br>
+                      <span style="color: orange;">●</span> Landings <br>
+                      <span style="color: orange;">●</span> Catch per unit effort (where applicable)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Reared animals and their outputs</td>
+                    <td>Agro</td>
+                    <td>
+                      <span style="color: green;">●</span> Livestock
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Wild plants, algae and their outputs</td>
+                    <td>Forest</td>
+                    <td>
+                      <span style="color: green;">●</span> Distribution of wild berries (modelling)
+                    </td>
+                  </tr>
+                  <tr>
+                      <td>Wild animals and their outputs</td>
+                      <td>Forest</td>
+                      <td>
+                        <span style="color: green;">●</span> Population sizes of species of interest
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>Plants and algae from in-situ aquaculture</td>
+                      <td>Water</td>
+                      <td></td>
+                  </tr>
+                  <tr>
+                    <td>Animals from in-situ aquaculture</td>
+                    <td>Water</td>
+                    <td>
+                      <span style="color: green;">●</span> Freshwater aquaculture production
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Water </span>(Nutrition)</td>
+                    <td>Water</td>
+                    <td>
+                      <span style="color: green;">●</span> Water abstracted
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Biomass </span>(Materials)</td>
+                    <td>Forest <br> Agro</td>
+                    <td>
+                      <span style="color: green;">●</span> Area and yield of fibre crops<br>
+                      <span style="color: green;">●</span> Timber production and consumption statistics
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Water </span>(Materials)</td>
+                    <td>Water</td>
+                    <td>
+                      <span style="color: green;">●</span> Water abstracted
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Plant-based resources</td>
+                    <td>Forest</td>
+                    <td>
+                      <span style="color: green;">●</span> Fuel wood statistics
+                    </td>
+                    <td rowspan="3"></td>
+                  </tr>
+                  <tr>
+                    <td>Animal-based resources</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Animal-based energy</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>(Mediation of waste, toxics and other nuisances)</td>
+                    <td>Forest</td>
+                    <td>
+                      <span style="color: green;">●</span> Area occupied by riparian forests <br>
+                      <span style="color: orange;">●</span> Nitrogen and Sulphur removal (forests)
+                    </td>
+                    <td>
+                      <span style="color: green;">●</span> Nutrient load to coast <br>
+                      <span style="color: green;">●</span> Heavy metals and persistent organic pollutants deposition <br>
+                      <span style="color: green;">●</span>Oxyrisk
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Mass stabilisation and control of erosion rates</td>
+                    <td>Forest <br> Agro
+                    </td>
+                    <td>
+                      <span style="color: green;">●</span> Soil erosion risk or erosion protection
+                    </td>
+                    <td rowspan="2">
+                      <span style="color: green;">●</span> Coastal protection capacity
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Buffering and attenuation of mass flows</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Hydrological cycle and water flow maintenance</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Flood protection</td>
+                    <td>Fresh</td>
+                    <td>
+                      <span style="color: green;">●</span> Floodplains areas (and record of annual floods) <br>
+                      <span style="color: green;">●</span> Area of wetlands located in flood risk zones
+                    </td>
+                    <td rowspan="2">
+                      <span style="color: green;">●</span>Coastal protection capacity
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Storm protection</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Ventilation and transpiration</td>
+                    <td>Agro</td>
+                    <td>
+                      <span style="color: green;">●</span> Amount of biomass
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Pollination and seed dispersal</td>
+                    <td>Agro</td>
+                    <td>
+                      <span style="color: green;">●</span> Pollination potential
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Maintaining nursery populations and habitats</td>
+                    <td></td>
+                    <td>
+                      <span style="color: green;">●</span> Share of High Nature Value farmland <br>
+                      <span style="color: green;">●</span> Ecological Status of water bodies
+                    </td>
+                    <td>
+                      <span style="color: green;">●</span> Oxygen concentration 
+                      <span style="color: green;">●</span> Turbidity <br>
+                      <span style="color: green;">●</span> Species distribution
+                      <span style="color: green;">●</span> Extent of marine protected areas
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Pest and disease control</span></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Weathering processes</td>
+                    <td>Agro</td>
+                    <td>
+                      <span style="color: green;">●</span> Share of organic farming 
+                      <span style="color: green;">●</span> Soil organic matter content 
+                      <span style="color: green;">●</span> Ph of topsoil 
+                      <span style="color: green;">●</span> Cation exchange capacity
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Decomposition and fixing processes</td>
+                    <td>Agro</td>
+                    <td>
+                      <span style="color: green;">●</span> Area of nitrogen fixing crops
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Chemical condition of freshwaters</td>
+                    <td>Water</td>
+                    <td>
+                      <span style="color: green;">●</span> Chemical status
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Chemical condition of salt waters</td>
+                    <td>Marine</td>
+                    <td></td>
+                    <td>
+                      <span style="color: green;">●</span> Nutrient load to coast <br>
+                      <span style="color: green;">●</span> HM and POP loading <br>
+                      <span style="color: green;">●</span> Oxyrisk 
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Global climate regulation by reduction of greenhouse gas concentrations</td>
+                    <td>Forest</td>
+                    <td>
+                      <span style="color: green;">●</span> Carbon storage and sequestration by forests
+                    </td>
+                    <td>
+                      <span style="color: green;">●</span> Carbon stock 
+                      <span style="color: green;">●</span> Carbon sequestration 
+                      <span style="color: green;">●</span> pH; 
+                      <span style="color: green;">●</span> Blue carbon <br> 
+                      <span style="color: green;">●</span> Primary production
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Micro and regional climate regulation</td>
+                    <td>Forest</td>
+                    <td>
+                      <span style="color: orange;">●</span> Forest area
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Physical and experiential interactions</span></td>
+                    <td rowspan="4">Forest Agro Water Marine</td>
+                    <td colspan="2">
+                      <span style="color: orange;">●</span> Visitor statistics
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Intellectual and representative interactions</span></td>
+                    <td colspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Spiritual and/or emblematic</span></td>
+                    <td colspan="2"></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-style: italic;">Other cultural outputs</span></td>
+                    <td colspan="2">
+                      <span style="color: green;">●</span> Extent of protected areas
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </the-eco-available_services-selection>
+
+      <the-eco-total_service-selection v-if="ecoLine === 'total_service'">
+        <div class="row">
+          <div class="item">
+            <div class="jumbotron">
+              <table class="table table-bordered center top-border no-empty">
+                <thead>
+                   <tr>
+                    <th style="min-width: 250px;"></th>
+                    <th></th>
+                    <th>Forests</th>
+                    <th>Agro-ecosystems
+                        (cropland and
+                        grassland)
+                    </th>
+                    <th>Freshwater
+                        ecosystems
+                        (rivers,
+                        lakes, ground water, and
+                        wetlands)
+                    </th>
+                    <th>Marine
+                        ecosystems
+                        (Marine inlets and
+                        transitional waters,
+                        coastal
+                        zones, shelf
+                        ecosystems,
+                        and open ocean)
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  
+                  <tr>
+                    <td>Provisioning
+                        services</td>
+                    <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+                    <td>13</td>
+                    <td>9</td>
+                    <td>6</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#ffcc4c;">●</td>
+                    <td>18</td>
+                    <td>8</td>
+                    <td>12</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#fb5759;">●</td>
+                    <td>7</td>
+                    <td>3</td>
+                    <td>8</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#808080;">●</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>2</td>
+                  </tr>
+                  <tr>
+                    <td>Regulation and
+                        maintenance services</td>
+                    <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+                    <td>5</td>
+                    <td>8</td>
+                    <td>5</td>
+                    <td>13</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#ffcc4c;">●</td>
+                    <td>15</td>
+                    <td>14</td>
+                    <td>22</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#fb5759;">●</td>
+                    <td>30</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#808080;">●</td>
+                    <td>13</td>
+                    <td>0</td>
+                    <td>11</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>Cultural services</td>
+                    <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>3</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#ffcc4c;">●</td>
+                    <td>6</td>
+                    <td>12</td>
+                    <td>12</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#fb5759;">●</td>
+                    <td>10</td>
+                    <td>6</td>
+                    <td>22</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="font-size: 2rem;line-height:1;padding: 0;color:#808080;">●</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>5</td>
+                  </tr>
+                  <tr>
+                    <td>Total number of
+                        indicators</td>
+                    <td style="border-color:#e0e0e0!important;"> </td>
+                    <td>117</td>
+                    <td>67</td>
+                    <td>110</td>
+                    <td>33</td>
+                  </tr>
+                  <tr>
+                    <td>Share of green
+                        indicators</td>
+                    <td style="color:#308e47;font-size: 2rem;line-height:1;padding: 0;">●</td>
+                    <td>15%</td>
+                    <td>27%</td>
+                    <td>13%</td>
+                    <td>42%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </the-eco-total_service-selection>
+
+      <the-eco-urban_service-selection v-if="ecoLine === 'urban_service'">
+        <div class="row">
+          <div class="item">
+            <div class="jumbotron" style="padding: 0;">
+              <table class="table table-bordered middle" style="margin-bottom: 0;">
+                <thead>
+                   <tr>
+                          <th style="max-width: 70px;">CICES Section</th>
+                          <th>CICES Class</th>
+                          <th>Class type (urban ecosystem services)</th>
+                          <th>Service providing unit (SPU)</th>
+                          <th>Demand</th>
+                      </tr>
+                </thead>
+
+                <tbody style="background: #f2b899">
+                  <tr>
+                    <td rowspan="5">Provisioning</td>
+                    <td>Cultivated crops</td>
+                    <td>Vegetables produced by urban allotments and in and the cummuting zone</td>
+                    <td>Crop fields, fruit trees, private and public gardens</td>
+                    <td rowspan="5">Consumption</td>
+                  </tr>
+                  <tr>
+                    <td>Surface water for drinking</td>
+                    <td></td>
+                    <td rowspan="4"> Watershed</td>
+                  </tr>
+                  <tr>
+                    <td>Ground water for drinking</td>
+                    <td></td>
+                  </tr>
+                   <tr>
+                    <td>Surface water for non-drinking purposes</td>
+                    <td></td>
+                  </tr>
+                   <tr>
+                    <td>Ground water for non-drinking purposes</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+
+                <tbody style="background: #a1cb7f">
+                  <tr>
+                    <td rowspan="7">Regulating</td>
+                    <td>Filtration/sequestration/storage/accumulation by ecoystems</td>
+                    <td>Regulation of air quality by urban trees and forests</td>
+                    <td>Forest, trees, shrubs</td>
+                    <td>Risk of exposure to pollutant concentraton beoyond thresholds</td>
+                  </tr>
+                  <tr>
+                    <td>Global climate regulation by reduction of greenhouse gas concentration</td>
+                    <td>Climate regulation by reduction of CO2</td>
+                    <td>Vegetation, soil</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Micro and regional climate regulation</td>
+                    <td>Urban temperature regulation</td>
+                    <td>Forest, trees, shrub, herbs, lawns, wetlands, water bodies</td>
+                    <td>Risk of exposure to high temperatures</td>
+                  </tr>
+                  <tr>
+                    <td>Mediation of smell/noise/visual impacts</td>
+                    <td>Noise mitigated by urban vegetation</td>
+                    <td>Forest, trees, shroubs, vegetated surfaces</td>
+                    <td>Risk of exposure to noise</td>
+                  </tr>
+                  <tr>
+                    <td>Hydrological cycle and water flow maintenance</td>
+                    <td>Water flow regulation and run off mitigation</td>
+                    <td>Trees, shrubs, vegetated and permeable surfaces</td>
+                    <td>Risk for flood sensitive areas or land use</td>
+                  </tr>
+                  <tr>
+                    <td>Flood control</td>
+                    <td></td>
+                    <td>Wetlands</td>
+                    <td>Exposure to flooding</td>
+                  </tr>
+                  <tr>
+                    <td>Pollination and seed dispersal</td>
+                    <td>Insect pollination</td>
+                    <td>Crop fields, fruit trees, private and public gardens</td>
+                    <td>Dependency on insect pollination</td>
+                  </tr>
+                </tbody>
+
+                <tbody style="background:#93d6ee">
+                  <tr>
+                    <td rowspan="2">Cultural</td>
+                    <td>Physical use of land/seascapes in different environmental settings</td>
+                    <td>Nature based recreation</td>
+                    <td rowspan="2">Parks, gardens, forest, trees, agricultural areas in the commuting zone, wetlands, water bodies, waterways, Natura 2000 Sites</td>
+                    <td rowspan="2">Preferences; potential and direct use</td>
+                  </tr>
+                  <tr>
+                    <td>Scientific <hr style="    border-style: inherit;
+                      border-color: #e0e0e0;"> Educational <hr style="    border-style: inherit;
+                      border-color: #e0e0e0;"> Heritage,cultural</td>
+                    <td>Nature based education</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </the-eco-urban_service-selection>
+
+      <the-eco-water_services-selection v-if="ecoLine === 'water_service'">
+        <div class="row full">
+          <div class="item full">
+            <div class="jumbotron full">
+              <table class="table table-bordered full-width full-bordered">
+                <thead>
+                  <tr>
+                    <th>Division</th>
+                    <th>Group</th>
+                    <th>Class</th>
+                    <th>Lakes</th>
+                    <th>Rivers</th>
+                    <th>Ground water</th>
+                    <th>Wetlands</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  
+                  
+                  
+                    <tr>
+                      
+                        <td rowspan="8">Nutrition</td>
+                      
+                        <td rowspan="6">Biomass</td>
+                      
+                        <td>Cultivated crops</td>
+                      
+                        <td colspan="4"></td>
+                      
+                      
+                    </tr>
+                  
+                    <tr>
+                      
+                      
+                        <td>Reared animals and their outputs</td>
+                      
+                        <td colspan="4"></td>
+                      
+                      
+                    </tr>
+                  
+                    <tr>
+                      
+                      
+                        <td>Wild plants, algae and their outputs</td>
+                      
+                        <td colspan="2"><span style="color: grey">●</span> Wild plants used in gastronomy, cosmetic, pharmaceutical uses (data on industries collecting the plants)</td>
+                      
+                        <td></td>
+                      
+                        <td><b>see lakes and rivers</b></td>
+                      
+                    </tr>
+                  
+                    <tr>
+                      
+                      
+                        <td>Wild animals and their outputs</td>
+                      
+                        <td colspan="2"><span style="color:orange">●</span> Fish production (catch in tonnes by commercial and recreational fisheries) 
+                          <br><span style="color:red;">●</span> Number of fisherman and hunters of waterfowls (anglers, professional and amateur fishermen)
+                          <br><span style="color:red;">●</span> Status of fish population (Species composition, Age Structure, Biomass kg/ha)
+                        </td>
+                      
+                      
+                        <td></td>
+                      
+                        <td><b>see lakes and rivers</b></td>
+                      
+                    </tr>
+          
+              
+    
+                    <tr>
+                      
+                        <td>Plants and algae from in-situ aquaculture</td>
+                      
+                        <td colspan="4"></td>
+                      
+                      
+                    </tr>
+                  
+                    <tr>
+                      
+                      
+                        <td>Animals from in-situ aquaculture</td>
+                      
+                        <td colspan="2"><span style="color:green;">●</span> Freshwater aquaculture production (e.g. sturgeon and caviar production)</td>
+                      
+                      
+                        <td></td>
+                      
+                        <td></td>
+                      
+                    </tr>
+              
+                    <tr>
+                      
+                        <td rowspan="2">Water</td>
+                      
+                        <td rowspan="2">
+                          <div style="float: left;">Surface water for drinking <hr style="margin-bottom: 1.5rem;margin-top: 1.5rem; border-style: solid; border-color: #e0e0e0;"> Ground water for drinking </div>
+                          <div style="width: 30%; float: right"><span style="color:red">●</span> Water exploitation index (WEI)</div></td>
+                      
+                        <!-- <td rowspan="2"></td> -->
+                        <td colspan="2"><span style="color:orange;">●</span> Water consumption for drinking<br><span style="color:orange;">●</span> Surface water availability<br><span style="color:green;">●</span> Water abstracted</td>
+                        <td></td>
+                      
+                        <td><span style="color:red">●</span> Nitrate-vulnerable zones</td>
+                      
+                    </tr>
+                  
+                    <tr>
+                      
+                      
+                      
+                      
+                        <td colspan="2"></td>
+                      
+                        <td><span style="color:orange;">●</span> Ground water bodies <br> <span style="color:orange;">●</span> Ground water abstraction</td>
+                      
+                        <td></td>
+                      
+                    </tr>
+            
+                  
+                  
+                    <tr>
+                      
+                        <td rowspan="5">Materials</td>
+                      
+                        <td rowspan="3">Biomass</td>
+                      
+                        <td>Fibres and other materials from plants, algae and animals for direct use or processing</td>
+                      
+                        <td colspan="3"></td>
+                      
+                        <td><span style="color:green">●</span> Wood produced (tons or volume) by riparian forest <br> <span style="color:green">●</span> Surface of exploited wet forests (e.g. poplars) and reeds</td>
+                      
+                    </tr>
+                  
+                  
+                    <tr>
+                      
+                        <td>Materials from plants, algae and animals for agricultural use</td>
+                      
+                        <td colspan="4"></td>
+                      
+                    </tr>
+                  
+                    <tr>
+                      
+                        <td>Genetic materials from all biota</td>
+                      
+                        <td colspan="4"></td>
+                      
+                    </tr>
+                  
+                
+                    <tr>
+                      
+                        <td rowspan="2">Water</td>
+                      
+                        <td rowspan="2">
+                          <div style="float: left;width: 60%">Surface water for non-drinking purposes <hr style="margin-bottom: 1.5rem;margin-top: 1.5rem; border-style: solid; border-color: #e0e0e0;"> Ground water for non-drinking purposes </div>
+                          <div style="width: 30%; float: right"><span style="color:red">●</span> Water exploitation index (WEI)</div></td>
+                      
+                      
+                        <td colspan="2"><span style="color:orange;">●</span> Water use per sector<br><span style="color:orange;">●</span> Surface water availability<br><span style="color:green;">●</span> Water abstracted<br> <span style="color:red">●</span> Volume of water bodies</td>
+                      
+                        <td></td>
+                        <td><span style="color:green">●</span> Surface of flood-prone areas</td>
+                      
+                    </tr>
+                  
+                    <tr>
+                      
+                      
+                        <td></td>
+                        <td></td>
+                      
+                        <td><span style="color:orange;">●</span> Ground water bodies <br> <span style="color:orange;">●</span> Ground water abstraction</td>
+                      
+                        <td></td>
+                      
+                    </tr>
+                  
+                </tbody>
+
+                <tbody>
+                  <tr>
+                    <td rowspan="3">Energy</td>
+                    <td rowspan="2">Biomass-based energy
+                        sources</td>
+                    <td>Plant-based resources</td>
+                    <td colspan="2"></td>
+                    <td></td>
+                    <td>
+                      <span style="color:orange;">●</span> Firewood produced byriparian forests
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Animal-based resources</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Mechanical energy</td>
+                    <td>Animal-based energy</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="5">Mediation of waste, toxics and other nuisances</td>
+                    <td rowspan="2">Mediation by biota</td>
+                    <td>Bio-remediation by micro-organisms, algae, plants,
+                        and animals</td>
+                    <td colspan="2" rowspan="3">
+                      <span style="color:orange;">●</span> Indicators on water quality
+                        (microbiological data for bathing waters,
+                        BOD5 nitrate conc, phosphate conc,
+                        oxygen conditions, saprobiological status)<br>
+                      <span style="color:orange;">●</span> Nutrient loads <br>
+                      <span style="color:orange;">●</span> Ecological status <br>
+                      <span style="color:orange;">●</span> Trophic status <br>
+                      <span style="color:green;">●</span> Area occupied by
+                        riparian forests <br>
+                      <span style="color: orange">●</span> Number and efficiency
+                        of treatment plants <br>
+                      <span style="color: orange">●</span> Waste treated
+                    </td>
+                    <td rowspan="3">
+                      <span style="color: grey">●</span> Indicators on
+                        groundwater
+                        quality (NO3,
+                        pesticide, trace
+                        metals, emerging
+                        pollutants, etc.
+                        evolution in GW)
+                    </td>
+                    <td rowspan="3">
+                      <span style="color: red">●</span> Carbon storage per unit
+                          of area <br>
+                      <span style="color: red">●</span> Potential mineralization
+                        or decomposition <br>
+                      <span style="color: orange">●</span> Ecological status <br>
+                      <span style="color: orange">●</span>Nutrient concentration <br>
+                      <span style="color: orange">●</span>Nutrient retention
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Filtration/sequestration/storage/accumulation by
+                      micro-organisms, algae, plants, and animals
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="3">Mediation by ecosystems</td>
+                    <td>Filtration/sequestration/storage/accumulation by
+                      ecosystems
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Dilution by atmosphere, freshwater and marine ecosystems
+                    </td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td>Mediation of smell/noise/visual impacts</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="6">Mediation of flows</td>
+                    <td rowspan="2">Mass flows</td>
+                    <td>Mass stabilisation and control of erosion rates</td>
+                    <td></td>
+                    <td></td>
+                    <td rowspan="4">
+                      <span style="color: grey">●</span> GW level
+                        evolution
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Buffering and attenuation of mass flows</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Sediment retention
+                    </td>
+                    <td>
+                      <span style="color: orange">●</span> Sediment retention
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Liquid flows</td>
+                    <td>Hydrological cycle and water flow maintenance</td>
+                    <td><span style="color: red">Volume of water
+                        (or snow)</span></td>
+                    <td><span style="color: red">Hydrological flow
+                        data</span></td>
+                    <td><span style="color: red">Surface of wetlands</span></td>
+                  </tr>
+                  <tr>
+                    <td>Flood protection</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Holding capacity flood risk maps <br>
+                      <span style="color: red">●</span> Conservation of river and lakes banks
+                    </td>
+                    <td>
+                      <span style="color: orange">●</span> Water holding capacity
+                        of soils<br>
+                      <span style="color:green;">●</span> Floodplains areas (and
+                        record of annual floods)<br>
+                      <span style="color:green;">●</span> Area of wetlands located
+                        in flood risk zones <br>
+                      <span style="color: red">●</span>
+                        Conservation status of
+                        riparian wetlands
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Gaseous / air flows</td>
+                    <td>Storm protection</td>
+                    <td colspan="3"></td>
+                    <td>
+                      <span style="color: orange">●</span> Conservation status of
+                        wetlands
+                      <span style="color: red">Area of wetlands,
+                            vegetation cover?</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Ventilation and transpiration</td>
+                    <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="10">
+                      Maintenance of
+                      physical,
+                      chemical,
+                      biological
+                      conditions
+                    </td>
+                    <td rowspan="2">
+                      Lifecycle maintenance,
+                      habitat and gene pool
+                      protection
+                    </td>
+                    <td>Pollination and seed dispersal</td>
+                    <td colspan="2"></td>
+                    <td rowspan="2">
+                      <span style="color: grey">●</span> GW level
+                    </td>
+                    <td>
+                      <span style="color: red">Beekeeping value of wetlands</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Maintaining nursery populations and habitats</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Biodiversity value (Species diversity or
+                        abundance, endemics or red list species
+                        and spawning location) <br>
+                      <span style="color:green;">●</span> Ecological status Morphological status
+                    </td>
+                    <td><span style="color: red">Biodiversity value?</span></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Pest and disease control</td>
+                    <td>Pest control</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Alien species (Introduced riparian and
+                        aquatic plants <br>
+                      <span style="color: orange">●</span> Number of introduced aquatic invertebrates <br>
+                      <span style="color: orange">●</span> Number of introduced vertebrates in
+                        rivers and riparian areas
+                    </td>
+                    <td></td>
+                    <td><b>see lakes and rivers</b></td>
+                  </tr>
+                  <tr>
+                      <td>Disease control</td>
+                      <td colspan="4"></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Soil formation and
+                        composition</td>
+                    <td>Weathering processes</td>
+                    <td colspan="2">
+                      <span style="color: red">●</span> Fluvisols surface
+                    </td>
+                    <td></td>
+                    <td>
+                      <span style="color: red">●</span> Hydromorphic soils
+                        (Presence/absence) Surface
+                        of floodplains
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Decomposition and fixing processes</td>
+                    <td colspan="3"></td>
+                    <td>
+                      <span style="color: red">●</span> Potential mineralization,
+                        decomposition, etc.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Water conditions</td>
+                    <td>Chemical condition of freshwaters</td>
+                    <td colspan="2">
+                      <span style="color:green;">●</span> Chemical status <br>
+                      <span style="color: orange">●</span> Ecological status
+                    </td>
+                    <td rowspan="2">
+                      <span style="color: orange">●</span> Indicators of GW quality
+                    </td>
+                    <td>
+                      <span style="color:green;">●</span> Chemical status <br>
+                      <span style="color: orange">●</span> Ecological status <br>
+                      <span style="color: grey">●</span> Potential of water purification of wetlands
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Chemical condition of salt waters</td>
+                    <td colspan="2"></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Atmospheric composition
+                      and climate regulation
+                    </td>
+                    <td>Global climate regulation by reduction of greenhouse
+                      gas concentrations
+                    </td>
+                    <td colspan="2">
+                      <span style="color: grey">●</span> C sequestration (Annual increase in <br>
+                      <span style="color: grey">●</span>
+                        Carbon sequestration in living biomass of
+                        riparian forest <br>
+                      <span style="color: grey">●</span> Carbon sequestered by
+                        plantations of Populus <br>
+                      <span style="color: grey">●</span> Organic carbon
+                        stored in fluvisols)
+                    </td>
+                    <td>
+                      <span style="color: grey">●</span> C sequestration (Evolution of annual volumes of CO2 injected, <br>
+                      <span style="color: grey">●</span>
+                        Number of sites for
+                        CO2 deep
+                        injections)
+                    </td>
+                    <td>see rivers and lakes</td>
+                  </tr>
+                  <tr>
+                    <td>Micro and regional climate regulation</td>
+                    <td colspan="2"></td>
+                    <td>
+                      <span style="color: grey">●</span> GW level
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="7">Physical and
+                      intellectual
+                      interactions
+                      with biota,
+                      ecosystems,
+                      and land-
+                      /seascapes
+                      [environmen
+                      tal settings]
+                    </td>
+                    <td rowspan="2">Physical and experiential
+                      interactions
+                    </td>
+                    <td>Experiential use of plants, animals and land-
+                      /seascapes in different environmental settings
+                    </td>
+                    <td colspan="2">
+                      <span style="color: red">●</span> Number of visitors (to National Parks including lakes or rivers) <br>
+                      <span style="color:green;">●</span> National Parks and Natura 2000 sites <br>
+                      <span style="color: red">●</span> Known bird watching sites Waterfowl
+                    </td>
+                    <td></td>
+                    <td>
+                      <span style="color: red">●</span> Number of visitors (waterfowl hunters and fishermen, <br>
+                      <span style="color: red">●</span> Visitors to National Parks or protected areas including wetlands) <br>
+                      <span style="color: red">●</span> Known bird watching sites <br>
+                      <span style="color: red">●</span> Waterfowl <br>
+                      <span style="color: red">●</span> Tourism revenue
+                    </td>
+                  </tr>
+                  <tr>
+                      <td>Physical use of land-/seascapes in different
+                          environmental settings</td>
+                      <td colspan="2">
+                        <span style="color: red">●</span> Number of visitors<br>
+                        <span style="color: red">●</span> bathing areas and Number beaches <br>
+                        <span style="color: red">●</span> Fishing reserves, <br>
+                        <span style="color: red">●</span> Fish abundance, <br>
+                        <span style="color: red">●</span> Fish monetary value from angling, <br>
+                        <span style="color: red">●</span> Number fishing licenses, <br>
+                        <span style="color: red">●</span> Quality of fresh waters for fishing
+                      </td>
+                      <td>
+                        <span style="color: red">●</span>
+                          Number of
+                          visitors (to thermal,
+                          mineral and mud
+                          springs and
+                          beaches, to Natural
+                          Reserve areas)
+                          speleology sites
+                      </td>
+                      <td>
+                        <span style="color: red">●</span> Number of visitors (waterfowl hunters and fishermen)<br>
+                        <span style="color: red">●</span> Number of fishing licenses <br>
+                        <span style="color: red">●</span> Tourism revenue
+                      </td>
+                  </tr>
+                  <tr>
+                      <td rowspan="5">Intellectual and
+                          representative interactions</td>
+                      <td>Scientific</td>
+                      <td colspan="4">
+                        <span style="color: orange">●</span> Monitoring sites (by scientists) <br>
+                        <span style="color: grey">●</span> Number of scientific projects, articles, studies <br>
+                        <span style="color: red">●</span> Classified sites (world heritage, label European tourism)
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>Educational</td>
+                      <td colspan="4">
+                        <span style="color: orange">●</span> Number of visitors <br>
+                        <span style="color:green;">●</span> National Parks and Natura 2000 sites
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>Heritage, cultural</td>
+                      <td colspan="4">
+                        <span style="color: orange">●</span> Number of visitors <br>
+                        <span style="color: orange">●</span> Natural heritage and cultural sites  <br>
+                        <span style="color: red">●</span> Number of annual cultural activities organise</td>
+                  </tr>
+                  <tr>
+                      <td>Entertainment</td>
+                      <td colspan="4">Number of visitors  (surface or number of wetlands located next to a bike path) </td>
+                  </tr>
+                  <tr>
+                      <td>Aesthetic</td>
+                      <td colspan="4">
+                        <span style="color: orange">●</span> Number of visitors  <br>
+                        <span style="color: orange">●</span> Contrasting landscapes (lakes close to mountains)  <br>
+                        <span style="color: green;">●</span> Proximity to urban areas of scenic rivers or lake 
+                      </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4">
+                      Spiritual, symbolic and other interactions with biota, ecosystems, and land/seascapes [environmen tal settings]
+                    </td>
+                    <td rowspan="2">Spiritual and/or emblematic </td>
+                    <td>Symbolic</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> National species or habitat types
+                    </td>
+                    <td>
+                      <span style="color: orange">●</span> Number of visitors (to places where springs and streams with GW origin made them historic and religious sites
+                    </td>
+                    <td>
+                      <span style="color: orange">●</span> National species or habitat types
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Sacred and/or religious</td>
+                    <td colspan="2">
+                      <span style="color: red">●</span> sacred/religious sites (catastrophic events, religious places)
+                    </td>
+                    <td></td>
+                    <td>
+                      <span style="color: red">●</span> sacred/religious sites (catastrophic events, religious places)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">Other cultural outputs</td>
+                    <td>Existence</td>
+                    <td colspan="2">
+                      <span style="color: orange">●</span> Number of visitors (to National Parks including lakes)  <br>
+                      <span style="color: orange">●</span> Number of fishing licenses
+                    </td>
+                    <td>
+                      <span style="color: orange">●</span> Number of visitors (to hot mineral spring waters)
+                    </td>
+                    <td>
+                      <b>See rivers and lakes </b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Bequest</td>
+                    <td colspan="2">
+                      <span style="color: grey">●</span> Number of association registered on animals, plants, environment, naturism
+                    </td>
+                    <td></td>
+                    <td><b>See rivers and lakes</b><br><span style="color: red">Social perception of wetlands</span>  </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </the-eco-water_services-selection>
+
+      <the-eco-pressure-selection v-if="ecoLine === 'pressure'">
+        <div class="row">
+          <div class="item">
+
+            <div class="jumbotron">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Indicator</th>
+                    <th v-for="header in biseHeader.slice(0,biseHeader.length-1)">{{header.abbreviation}}</th>
+                  </tr>
+                </thead>
+
+                <tbody v-for="classItem in pressures">
+                  <tr v-for="(indicatorValue, indicatorKey) in classItem.indicator">
+
+                    <td 
+                      v-if="computeClassNames(classItem.code, indicatorKey)"
+                      :rowspan="Object.keys(classItem.indicator).length"
+                    >{{classItem.name}}
+                    </td>
+
+                    <td class="indicators">
+                      {{indicatorValue.name}}
+                    </td>
+
+                    <td v-for="header in biseHeader.slice(0,biseHeader.length-1)">
+                      <span 
+                        class="bullet"
+                        @click="handleSelectedBullet(header.code, indicatorKey, classItem)"
+                      >{{doBullets(pressureOnAllHeaders[indicatorKey][header.code])}}
+                      </span>
+                    </td>
+                   
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                    <!--    <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-pressure-selection>
+
+      <the-eco-water-selection v-if="ecoLine === 'water'">
+        <div class="row">
+          <div class="item">
+
+            <div class="jumbotron">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Indicator</th>
+                    <th v-for="header in biseHeader.slice(0, biseHeader.length-1)">{{header.abbreviation}}</th>
+                  </tr>
+                </thead>
+
+                <tbody v-for="classItem in waterEcosystem">
+                  <tr v-for="(indicatorValue, indicatorKey) in classItem.indicator">
+
+                    <td 
+                      v-if="computeClassNames(classItem.code, indicatorKey)"
+                      :rowspan="Object.keys(classItem.indicator).length"
+                    >{{classItem.name}}
+                    </td>
+
+                    <td class="indicators">
+                      {{indicatorValue.name}}
+                    </td>
+
+                    <td v-for="header in biseHeader.slice(0,biseHeader.length-1)">
+                      <span 
+                        class="bullet"
+                        @click="handleSelectedBullet(header.code, indicatorKey, classItem)"
+                      >{{doBullets(waterEcosystemOnAllHeaders[indicatorKey][header.code])}}
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                    <!--    <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-water-selection>
+
+      <the-eco-marine-selection v-if="ecoLine === 'marine'">
+        <div class="row">
+          <div class="item">
+
+            <div class="jumbotron">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Indicator</th>
+                    <th v-for="header in marineHeaders">{{header.abbreviation}}</th>
+                  </tr>
+                </thead>
+
+                <tbody v-for="classItem in marineEcosystem">
+                  <tr v-for="(indicatorValue, indicatorKey) in classItem.indicator">
+
+                    <td 
+                      v-if="computeClassNames(classItem.code, indicatorKey)"
+                      :rowspan="Object.keys(classItem.indicator).length"
+                    >{{classItem.name}}
+                    </td>
+
+                    <td class="indicators">
+                      {{indicatorValue.name}}
+                    </td>
+
+                    <td v-for="header in marineHeaders">
+                      <span 
+                        class="bullet"
+                        @click="handleSelectedBullet(header.code, indicatorKey, classItem)"
+                      >{{doBullets(marineEcosystemOnAllHeaders[indicatorKey][header.code])}}
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                    <!--    <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-eco-marine-selection>
+
+      <the-header-selection v-if="selectedHeaderItem">
+        <div class="row">
+          <div class="item">
+
+            <div class="wrapper-item">
+              <div class="col-2">
+                Class
+              </div>
+              <div class="col-10">Indicator</div>
+            </div>
+
+            <div class="jumbotron">
+              <div
+                v-if="selectedHeaderItem[ecoItem.code] !== undefined"
+                v-for="ecoItem in biseEco"
+                class="detail clearfix"
+              >
+                <div
+                  
+                  v-for="itemClass in selectedHeaderItem[ecoItem.code].details.class" class="col-12"
+                >
+                  <div class="lead col-2">
+                    <p>{{itemClass.name}}</p>
+                  </div>
+                  <ul class="col-10">
+                    <li
+                      v-for="(indicatorValue, indicatorKey) in itemClass.indicator"
+                      @click="handleClickIndicator(indicatorValue, indicatorKey)"
+                      class="indicator-li"
+                      :style="{ 'font-weight': indicatorValue.bold ? 'bold' : 'normal'}"
+                      :class="{ 'selected-indicator': selectedIndicators[indicatorKey] }"
+                    >{{indicatorValue.name}}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
+              class="modal col-6"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                  </div>
+                  <div class="modal-body">
+                    <ul class="col-10">
+                      <li
+                        v-for="policy in allPolicies"
+                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
+                      >
+                        <svg
+                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                          class="icon-svg"
+                        >
+                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                        </svg>
+                    <!--    <span
+                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
+                          class="bold-font"
+                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+                        <span>{{policy.name}}</span>
+                    </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </the-header-selection>
+  </div>
+  </div>
+</template>
+
+<script>
+
+
 
 
 const bise = {
@@ -8985,9 +11120,10 @@ const notSelectedColour = 'lightgrey';
 const selectedColour = '#f35555';
 let displayedClassNames = {};
 
-let app = new Vue({
-  el: '#app',
-  data: {
+export default {
+  name: 'app',
+  data() {
+    return {
     bise,
     biseHeader,
     marineHeaders,
@@ -9012,7 +11148,8 @@ let app = new Vue({
     mustSelectLandOrWater: false,
     arrowsStyle: { header: {}, eco: {} },
     ecoLine: null,
-  },
+  }
+},
 
   created() {
     this.initArrowStyles();
@@ -9355,9 +11492,1100 @@ let app = new Vue({
       return '';
     },
   }
-});
+};
 
 
 
 
-  });
+</script>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #34495e;
+  background-color: #fff;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+[class*="col-"] {
+  float: left;
+}
+.col-1-sm {width: 6.33%;}
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-9-sm {width: 70%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+.pad-bot-10 {padding-bottom: 10px;}
+
+.menu-left {
+  text-align: center;
+  color: #fa8302;
+  font-size: 18px;
+}
+.menu {
+  margin-left: 10px;
+  text-align: center;
+}
+.menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.menu li {
+  margin: 15px;
+  background-color: white;
+  opacity: 0.3;
+  color: black;
+  box-shadow: 0 2px 1px rgba(0,0,0,0.32), 0 1px 1px rgba(0,0,0,1);
+  border-radius: 5px;
+  height: 60px;
+}
+.menu>p {
+  margin: 0;
+}
+.menu li:hover {
+  opacity: 0.7;
+}
+.highlight-li {
+  opacity: 0.7 !important;
+}
+.hide {
+  visibility: hidden;
+}
+.not-visible {
+  visibility: hidden;
+}
+.bold-font {
+  font-weight: bold;
+}
+.instrument-heading-wrap {
+  border:1px solid white;
+  border-radius: 5px;
+}
+.instrument-heading-wrap:hover {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+.instrument-heading-wrap:hover .instrument-heading-bar{
+  visibility: hidden;
+}
+.instrument-heading-bar {
+  border-radius: 5px;
+  padding: 8px;
+}
+.selected .instrument-heading-bar {
+  visibility: hidden;
+}
+.instrument-heading-text {
+  min-height: 70px;
+  bottom: 0;
+  padding-top: 20px;
+}
+.ecosystem-heading ul{
+  list-style-type: none;
+  margin: 0;
+}
+.ecosystem-heading li{
+  margin-bottom: 7px;
+  background-color: white;
+  opacity: 0.3;
+  color: black;
+  box-shadow: 0 2px 1px rgba(0,0,0,0.32), 0 1px 1px rgba(0,0,0,1);
+  border-radius: 5px;
+  height: 50px;
+}
+.ecosystem-item {
+  margin: 15px;
+  height: 60px;
+  overflow: hidden;
+  position: relative;
+}
+.ecosystem-wrap {
+  border: 1px solid white;
+  border-radius: 5px;
+  width: 80%;
+  height: 100%;
+  float: left;
+  margin-left: 30px;
+}
+.ecosystem-wrap:hover {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+.ecosystem-wrap:hover .ecosystem-bar{
+  visibility: hidden;
+}
+.ecosystem-bar {
+  margin: 3px;
+  background-color: white;
+  opacity: 0.3;
+  color: black;
+  box-shadow: 0 2px 1px rgba(0,0,0,0.32), 0 1px 1px rgba(0,0,0,1);
+  border-radius: 5px;
+  height: 90%;
+  padding: 0;
+}
+.selected .ecosystem-bar {
+  visibility: hidden;
+}
+.ecosystem-text {
+  margin-top: 0;
+  width: 90%;
+  float: left;
+  padding: 15px;
+  cursor: pointer;
+}
+.ecosystem-heading-content {
+  margin: 0;
+  padding: 0;
+}
+.selected .ecosystem-wrap,
+.selected .instrument-heading-wrap,
+.selected.lateral-text-ontop,
+.selected.lateral-text-onbottom
+{
+  background-color: #f35555;
+  color: white;
+  border: 1px solid lightgrey!important;
+}
+.item {
+  border-radius: 5px;
+  text-align: center;
+  border:1px solid #a6a6a64d;
+  box-shadow: 2px 1px 4px lightgrey;
+  padding: 15px;
+  width: calc(9*(6.33% + 10px));
+  float: left;
+}
+.wrapper-item {
+  padding-bottom: 50px;
+  font-size: 1.5rem;
+}
+.detail {
+  min-height: 150px;
+  border-bottom: 1px solid #c4bfb6;
+  overflow: hidden;
+}
+.detail:last-child {
+  border-bottom: none;
+}
+.detail ul{
+  list-style-type: none;
+  margin: 0;
+}
+.indicator-li {
+  font-weight: 300;
+  margin: 5px;
+  padding: 5px;
+  min-height: 30px;
+  text-align: left;
+}
+.indicator-li::after {
+  display: block;
+  font-weight: bold;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+.selected-indicator {
+  font-weight: 300;
+  background-color: #f25555;
+  padding: 5px;
+  border-radius: 2.3rem;
+  border-bottom: 1px solid #c4bfb6;
+  color: white;
+}
+
+/* bootstrap */
+@media (min-width: 576px) {
+  .jumbotron {
+    padding: 4rem 2rem;
+  }
+  .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+  }
+}
+.jumbotron {
+  padding: 2rem 1rem;
+  background-color: #e9bf6c33;
+  border-radius: .3rem;
+  border: 2px solid #80808070;
+}
+.display-4 {
+  font-size: 3.5rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+.lead {
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: left;
+}
+.mb-4, .my-4 {
+  margin-bottom: 1.5rem!important;
+}
+.mt-4, .my-4 {
+  margin-top: 1.5rem!important;
+}
+.clearfix {
+  clear: both;
+}
+.clearfix:after {
+  clear: both; 
+  content: "";
+  display: table; 
+}
+
+.modal {
+  display: block;
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  outline: 0;
+  padding: 0;
+  padding-right: 10px;
+}
+.modal:last-child {
+  padding-right: 0;
+}
+.modal-dialog {
+  position: relative;
+  width: auto;
+  pointer-events: none;
+}
+.modal-content {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: .3rem;
+  outline: 0;
+}
+.modal-header {
+  border-bottom: 1px solid #e9ecef;
+  background-color: #f25555;
+  color: white;
+}
+.modal-body {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1rem;
+  background-color: #e9bf6c33;
+}
+.modal-body ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.modal-body li {
+  text-align: left;
+  padding: 5px;
+}
+
+.arrow-right {
+  margin-left: 22px;
+  height: 30px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.arrow-top {
+  height: 30px;
+  margin-top: 15px;
+}
+.icon-svg {
+  height: 15px;
+  width: 15px;
+}
+
+.btn:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
+.btn {
+  text-decoration: none !important;
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.btn-outline-primary {
+  color: #007bff;
+  background-color: transparent;
+  background-image: none;
+  border-color: #007bff;
+}
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+button, select {
+  text-transform: none;
+}
+button, input {
+  overflow: visible;
+}
+button{
+  font: inherit;
+  margin: 0;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.lateral-text-wrapper {
+  display: block;
+  position: relative;
+  margin-top: calc(5rem + 10px);
+}
+
+.lateral-text {
+  writing-mode: vertical-lr;
+  font-size: 36px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.lateral-text-ontop {
+  position: absolute;
+  top: -11rem;
+}
+.lateral-text-onbottom {
+  height: calc(6*(60px + 15px));
+}
+
+
+
+/*table styles*/
+.shadow-z-1 {
+  -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+}
+/* -- Material Design Table style -------------- */
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 2rem;
+  font-size: .8rem;
+  border-collapse: collapse;
+}
+.table > thead > tr,
+.table > tbody > tr,
+.table > tfoot > tr {
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  text-align: left;
+  padding: .5rem;
+  vertical-align: top;
+  border-top: 0;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.table > thead > tr > th {
+  font-weight: 400;
+  color: #757575;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: .75rem;
+  vertical-align: middle;
+  text-align: center;
+}
+.table > caption + thead > tr:first-child > th,
+.table > colgroup + thead > tr:first-child > th,
+.table > thead:first-child > tr:first-child > th,
+.table > caption + thead > tr:first-child > td,
+.table > colgroup + thead > tr:first-child > td,
+.table > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+.table > tbody + tbody {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+.table .table {
+  background-color: #fff;
+}
+.table .no-border {
+  border: 0;
+}
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 0.8rem;
+}
+.table-bordered {
+  border: 0;
+}
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+  border: 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+.table-bordered > thead > tr > th,
+.table-bordered > thead > tr > td {
+  border-bottom-width: 2px;
+}
+.table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: #f5f5f5;
+}
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+@media screen and (max-width: 768px) {
+  .table-responsive-vertical > .table {
+    margin-bottom: 0;
+    background-color: transparent;
+  }
+  .table-responsive-vertical > .table > thead,
+  .table-responsive-vertical > .table > tfoot {
+    display: none;
+  }
+  .table-responsive-vertical > .table > tbody {
+    display: block;
+  }
+  .table-responsive-vertical > .table > tbody > tr {
+    display: block;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    margin-bottom: 1.6rem;
+  }
+  .table-responsive-vertical > .table > tbody > tr > td {
+    background-color: #fff;
+    display: block;
+    vertical-align: middle;
+    text-align: right;
+  }
+  .table-responsive-vertical > .table > tbody > tr > td[data-title]:before {
+    content: attr(data-title);
+    float: left;
+    font-size: inherit;
+    font-weight: 400;
+    color: #757575;
+  }
+  .table-responsive-vertical.shadow-z-1 {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+  .table-responsive-vertical.shadow-z-1 > .table > tbody > tr {
+    border: none;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+    -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  }
+  .table-responsive-vertical > .table-bordered {
+    border: 0;
+  }
+  .table-responsive-vertical > .table-bordered > tbody > tr > td {
+    border: 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .table-responsive-vertical > .table-bordered > tbody > tr > td:last-child {
+    border-bottom: 0;
+  }
+  .table-responsive-vertical > .table-striped > tbody > tr > td,
+  .table-responsive-vertical > .table-striped > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical > .table-striped > tbody > tr > td:nth-child(odd) {
+    background-color: #f5f5f5;
+  }
+  .table-responsive-vertical > .table-hover > tbody > tr:hover > td,
+  .table-responsive-vertical > .table-hover > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical > .table-hover > tbody > tr > td:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+}
+.table-striped.table-mc-red > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-red > tbody > tr:nth-child(odd) > th {
+  background-color: #fde0dc;
+}
+.table-hover.table-mc-red > tbody > tr:hover > td,
+.table-hover.table-mc-red > tbody > tr:hover > th {
+  background-color: #f9bdbb;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-red > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-red > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-red > tbody > tr > td:nth-child(odd) {
+    background-color: #fde0dc;
+  }
+  .table-responsive-vertical .table-hover.table-mc-red > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-red > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-red > tbody > tr > td:hover {
+    background-color: #f9bdbb;
+  }
+}
+.table-striped.table-mc-pink > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-pink > tbody > tr:nth-child(odd) > th {
+  background-color: #fce4ec;
+}
+.table-hover.table-mc-pink > tbody > tr:hover > td,
+.table-hover.table-mc-pink > tbody > tr:hover > th {
+  background-color: #f8bbd0;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-pink > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-pink > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-pink > tbody > tr > td:nth-child(odd) {
+    background-color: #fce4ec;
+  }
+  .table-responsive-vertical .table-hover.table-mc-pink > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-pink > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-pink > tbody > tr > td:hover {
+    background-color: #f8bbd0;
+  }
+}
+.table-striped.table-mc-purple > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-purple > tbody > tr:nth-child(odd) > th {
+  background-color: #f3e5f5;
+}
+.table-hover.table-mc-purple > tbody > tr:hover > td,
+.table-hover.table-mc-purple > tbody > tr:hover > th {
+  background-color: #e1bee7;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-purple > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-purple > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-purple > tbody > tr > td:nth-child(odd) {
+    background-color: #f3e5f5;
+  }
+  .table-responsive-vertical .table-hover.table-mc-purple > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-purple > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-purple > tbody > tr > td:hover {
+    background-color: #e1bee7;
+  }
+}
+.table-striped.table-mc-deep-purple > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-deep-purple > tbody > tr:nth-child(odd) > th {
+  background-color: #ede7f6;
+}
+.table-hover.table-mc-deep-purple > tbody > tr:hover > td,
+.table-hover.table-mc-deep-purple > tbody > tr:hover > th {
+  background-color: #d1c4e9;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-deep-purple > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-deep-purple > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-deep-purple > tbody > tr > td:nth-child(odd) {
+    background-color: #ede7f6;
+  }
+  .table-responsive-vertical .table-hover.table-mc-deep-purple > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-deep-purple > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-deep-purple > tbody > tr > td:hover {
+    background-color: #d1c4e9;
+  }
+}
+.table-striped.table-mc-indigo > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-indigo > tbody > tr:nth-child(odd) > th {
+  background-color: #e8eaf6;
+}
+.table-hover.table-mc-indigo > tbody > tr:hover > td,
+.table-hover.table-mc-indigo > tbody > tr:hover > th {
+  background-color: #c5cae9;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-indigo > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-indigo > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-indigo > tbody > tr > td:nth-child(odd) {
+    background-color: #e8eaf6;
+  }
+  .table-responsive-vertical .table-hover.table-mc-indigo > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-indigo > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-indigo > tbody > tr > td:hover {
+    background-color: #c5cae9;
+  }
+}
+.table-striped.table-mc-blue > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-blue > tbody > tr:nth-child(odd) > th {
+  background-color: #e7e9fd;
+}
+.table-hover.table-mc-blue > tbody > tr:hover > td,
+.table-hover.table-mc-blue > tbody > tr:hover > th {
+  background-color: #d0d9ff;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-blue > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-blue > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-blue > tbody > tr > td:nth-child(odd) {
+    background-color: #e7e9fd;
+  }
+  .table-responsive-vertical .table-hover.table-mc-blue > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-blue > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-blue > tbody > tr > td:hover {
+    background-color: #d0d9ff;
+  }
+}
+.table-striped.table-mc-light-blue > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-light-blue > tbody > tr:nth-child(odd) > th {
+  background-color: #e1f5fe;
+}
+.table-hover.table-mc-light-blue > tbody > tr:hover > td,
+.table-hover.table-mc-light-blue > tbody > tr:hover > th {
+  background-color: #b3e5fc;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-light-blue > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-light-blue > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-light-blue > tbody > tr > td:nth-child(odd) {
+    background-color: #e1f5fe;
+  }
+  .table-responsive-vertical .table-hover.table-mc-light-blue > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-light-blue > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-light-blue > tbody > tr > td:hover {
+    background-color: #b3e5fc;
+  }
+}
+.table-striped.table-mc-cyan > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-cyan > tbody > tr:nth-child(odd) > th {
+  background-color: #e0f7fa;
+}
+.table-hover.table-mc-cyan > tbody > tr:hover > td,
+.table-hover.table-mc-cyan > tbody > tr:hover > th {
+  background-color: #b2ebf2;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-cyan > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-cyan > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-cyan > tbody > tr > td:nth-child(odd) {
+    background-color: #e0f7fa;
+  }
+  .table-responsive-vertical .table-hover.table-mc-cyan > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-cyan > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-cyan > tbody > tr > td:hover {
+    background-color: #b2ebf2;
+  }
+}
+.table-striped.table-mc-teal > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-teal > tbody > tr:nth-child(odd) > th {
+  background-color: #e0f2f1;
+}
+.table-hover.table-mc-teal > tbody > tr:hover > td,
+.table-hover.table-mc-teal > tbody > tr:hover > th {
+  background-color: #b2dfdb;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-teal > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-teal > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-teal > tbody > tr > td:nth-child(odd) {
+    background-color: #e0f2f1;
+  }
+  .table-responsive-vertical .table-hover.table-mc-teal > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-teal > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-teal > tbody > tr > td:hover {
+    background-color: #b2dfdb;
+  }
+}
+.table-striped.table-mc-green > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-green > tbody > tr:nth-child(odd) > th {
+  background-color: #d0f8ce;
+}
+.table-hover.table-mc-green > tbody > tr:hover > td,
+.table-hover.table-mc-green > tbody > tr:hover > th {
+  background-color: #a3e9a4;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-green > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-green > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-green > tbody > tr > td:nth-child(odd) {
+    background-color: #d0f8ce;
+  }
+  .table-responsive-vertical .table-hover.table-mc-green > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-green > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-green > tbody > tr > td:hover {
+    background-color: #a3e9a4;
+  }
+}
+.table-striped.table-mc-light-green > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-light-green > tbody > tr:nth-child(odd) > th {
+  background-color: #f1f8e9;
+}
+.table-hover.table-mc-light-green > tbody > tr:hover > td,
+.table-hover.table-mc-light-green > tbody > tr:hover > th {
+  background-color: #dcedc8;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-light-green > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-light-green > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-light-green > tbody > tr > td:nth-child(odd) {
+    background-color: #f1f8e9;
+  }
+  .table-responsive-vertical .table-hover.table-mc-light-green > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-light-green > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-light-green > tbody > tr > td:hover {
+    background-color: #dcedc8;
+  }
+}
+.table-striped.table-mc-lime > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-lime > tbody > tr:nth-child(odd) > th {
+  background-color: #f9fbe7;
+}
+.table-hover.table-mc-lime > tbody > tr:hover > td,
+.table-hover.table-mc-lime > tbody > tr:hover > th {
+  background-color: #f0f4c3;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-lime > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-lime > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-lime > tbody > tr > td:nth-child(odd) {
+    background-color: #f9fbe7;
+  }
+  .table-responsive-vertical .table-hover.table-mc-lime > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-lime > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-lime > tbody > tr > td:hover {
+    background-color: #f0f4c3;
+  }
+}
+.table-striped.table-mc-yellow > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-yellow > tbody > tr:nth-child(odd) > th {
+  background-color: #fffde7;
+}
+.table-hover.table-mc-yellow > tbody > tr:hover > td,
+.table-hover.table-mc-yellow > tbody > tr:hover > th {
+  background-color: #fff9c4;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-yellow > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-yellow > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-yellow > tbody > tr > td:nth-child(odd) {
+    background-color: #fffde7;
+  }
+  .table-responsive-vertical .table-hover.table-mc-yellow > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-yellow > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-yellow > tbody > tr > td:hover {
+    background-color: #fff9c4;
+  }
+}
+.table-striped.table-mc-amber > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-amber > tbody > tr:nth-child(odd) > th {
+  background-color: #fff8e1;
+}
+.table-hover.table-mc-amber > tbody > tr:hover > td,
+.table-hover.table-mc-amber > tbody > tr:hover > th {
+  background-color: #ffecb3;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-amber > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-amber > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-amber > tbody > tr > td:nth-child(odd) {
+    background-color: #fff8e1;
+  }
+  .table-responsive-vertical .table-hover.table-mc-amber > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-amber > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-amber > tbody > tr > td:hover {
+    background-color: #ffecb3;
+  }
+}
+.table-striped.table-mc-orange > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-orange > tbody > tr:nth-child(odd) > th {
+  background-color: #fff3e0;
+}
+.table-hover.table-mc-orange > tbody > tr:hover > td,
+.table-hover.table-mc-orange > tbody > tr:hover > th {
+  background-color: #ffe0b2;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-orange > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-orange > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-orange > tbody > tr > td:nth-child(odd) {
+    background-color: #fff3e0;
+  }
+  .table-responsive-vertical .table-hover.table-mc-orange > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-orange > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-orange > tbody > tr > td:hover {
+    background-color: #ffe0b2;
+  }
+}
+.table-striped.table-mc-deep-orange > tbody > tr:nth-child(odd) > td,
+.table-striped.table-mc-deep-orange > tbody > tr:nth-child(odd) > th {
+  background-color: #fbe9e7;
+}
+.table-hover.table-mc-deep-orange > tbody > tr:hover > td,
+.table-hover.table-mc-deep-orange > tbody > tr:hover > th {
+  background-color: #ffccbc;
+}
+@media screen and (max-width: 767px) {
+  .table-responsive-vertical .table-striped.table-mc-deep-orange > tbody > tr > td,
+  .table-responsive-vertical .table-striped.table-mc-deep-orange > tbody > tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-striped.table-mc-deep-orange > tbody > tr > td:nth-child(odd) {
+    background-color: #fbe9e7;
+  }
+  .table-responsive-vertical .table-hover.table-mc-deep-orange > tbody > tr:hover > td,
+  .table-responsive-vertical .table-hover.table-mc-deep-orange > tbody > tr:hover {
+    background-color: #fff;
+  }
+  .table-responsive-vertical .table-hover.table-mc-deep-orange > tbody > tr > td:hover {
+    background-color: #ffccbc;
+  }
+}
+
+.table > thead > tr.first-header > th {
+  font-weight: bold;
+  color: black;
+}
+
+
+.bullet {
+  font-size: 4rem;
+  line-height: 10px;
+  color: red;
+}
+
+
+.ecosystem-wrap.header.selected {
+      background-color: #f35555;
+    color: white;
+    border: 1px solid lightgrey!important;
+}
+
+/*.menu li.not-visible:first-of-type {
+      visibility: visible;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: white!important;
+    opacity: 1!important;
+    pointer-events: none;
+}*/
+
+
+
+
+.ecosystem-wrap.header {
+  font-weight: bold;
+    font-size: 1.3rem;
+    background: none;
+    border-bottom: 1px solid #eee;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+    padding: 1rem;
+}
+
+.ecosystem-wrap.header:hover {
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  text-shadow: 1px 1px 3px #aaa;
+  border-bottom-color: #f35555;
+}
+
+.header .ecosystem-text {
+      padding: 0;
+    width: 100%;
+}
+
+.menu li {
+  cursor: pointer;
+}
+
+.large-btn {
+  width: 100%;
+  border-radius: 0;
+  background: #eee;
+  margin-bottom: .5rem;
+}
+
+.large-btn:last-of-type {
+  margin-bottom: 0;
+}
+
+.large-btn.left {
+    width: 50%;
+    background: #ff9310;
+    color: white;
+  margin-bottom: 0;
+
+    border-radius: 0;
+}
+
+.large-btn.right {
+    width: 50%;
+    background: #668dcc;
+    color: white;
+    float: right;
+    border-radius: 0;
+  margin-bottom: 0;
+
+}
+
+.large-btn:hover {
+  text-shadow:  0px 0px 3px #444;
+}
+
+.table.no-empty td:empty {
+  border-color: transparent!important;
+}
+
+.table.full-width td {
+  min-width: 150px;
+}
+
+.jumbotron.full {
+  background: #fcefda;
+  overflow: auto;
+}
+
+.row.full {
+  position: relative;
+}
+
+
+.item.full {
+  position: absolute;
+  width: 100%;
+}
+
+.table.full td > br{
+  display: none;
+}
+
+.table.center tr td:not(:first-of-type) {
+  text-align: center;
+}
+
+.table.top-border tr td {
+      border-top: 1px solid #e0e0e0;
+      border-bottom: none;
+}
+
+.table.middle tr td {
+  vertical-align:  middle;
+}
+
+.table.full-width th {
+    text-align: left;
+}
+
+.table.full-bordered td{
+  border: 1px solid #e0e0e0;
+}
+</style>

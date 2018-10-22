@@ -8982,7 +8982,7 @@ const notSelectedColour = 'lightgrey';
 const selectedColour = '#f35555';
 let displayedClassNames = {};
 
-
+  document.addEventListener("DOMContentLoaded", function(event) {
 let app = new Vue({
   el: '#app',
   data: {
@@ -9353,3 +9353,8 @@ let app = new Vue({
     },
   }
 });
+
+
+
+
+  });

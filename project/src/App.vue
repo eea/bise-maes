@@ -628,7 +628,7 @@
 <script>
 
 import axios from 'axios';
-import tables from './assets/test.js'
+import tables from './assets/tables.js'
 
 const notSelectedColour = 'lightgrey';
 const selectedColour = '#f35555';

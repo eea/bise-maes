@@ -673,7 +673,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "percentage-of-urban-green": {
                            "name": "Percentage of urban green space (%)",
@@ -840,7 +840,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity and abundance",
                      "indicator": {
                         "number-abundance-bird-species": {
                            "name": "Number and abundance of bird species (number; number/ha)",
@@ -905,7 +905,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU nature directives",
                      "indicator": {
                         "percentage-urban-covered-natura": {
                            "name": "Percentage of urban area covered by Natura 2000 area (%)",
@@ -940,7 +940,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural soil attributes",
                      "indicator": {
                         "bulk-density": {
                            "name": "Bulk density (kg/m3)",
@@ -1004,7 +1004,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "available-water-capacity": {
                            "name": "Available water capacity (index)",
@@ -1516,7 +1516,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Grassland-habitat-fragmentation": {
                            "name": "Grassland habitat fragmentation (meshes/1000 km2)",
@@ -1758,7 +1758,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity and abundance",
                      "indicator": {
                         "Farmland-Bird-Indicator": {
                            "name": "Farmland Bird Indicator (index) (SEBI 001) (AEI2.4.1)",
@@ -1890,7 +1890,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU nature directives",
                      "indicator": {
                         "Conservation-status-trends-habitats": {
                            "name": "Conservation status and trends of habitats of Community interest associated to grassland (%) (SEBI 005)",
@@ -2045,7 +2045,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "of which soil related (suggested by the soil experts)",
                      "indicator": {
                         "Soil-organic-carbon": {
                            "name": "Soil organic carbon (SOC) (% or g/kg)",
@@ -2176,7 +2176,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "Water-availability": {
                            "name": "Water availability (m3/ha/year)",
@@ -2748,7 +2748,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Grassland-habitat-fragmentation": {
                            "name": "Grassland habitat fragmentation (meshes/1000 km2)",
@@ -2990,7 +2990,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity and abundance",
                      "indicator": {
                         "Farmland-Bird-Indicator": {
                            "name": "Farmland Bird Indicator (index) (SEBI 001) (AEI2.4.1)",
@@ -3122,7 +3122,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU nature directives",
                      "indicator": {
                         "Conservation-status-trends-habitats": {
                            "name": "Conservation status and trends of habitats of Community interest associated to grassland (%) (SEBI 005)",
@@ -3277,7 +3277,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "of which soil related (suggested by the soil experts)",
                      "indicator": {
                         "Soil-organic-carbon": {
                            "name": "Soil organic carbon (SOC) (% or g/kg)",
@@ -3408,7 +3408,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "Water-availability": {
                            "name": "Water availability (m3/ha/year)",
@@ -4070,7 +4070,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Deadwood": {
                            "name": "Deadwood (m3/ha) (SEBI 018)",
@@ -4417,7 +4417,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity and abundance",
                      "indicator": {
                         "Species-diversity-richness": {
                            "name": "Species diversity, richness (number and abundance of species, including vascular plants, vertebrates, etc) (number of species, indexes)",
@@ -4533,7 +4533,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU nature directives",
                      "indicator": {
                         "Percentage-forest-Natura": {
                            "name": "Percentage of forest covered by Natura 2000 (%)",
@@ -4754,7 +4754,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural soil attributes",
                      "indicator": {
                         "Soil-biodiversity": {
                            "name": "Soil biodiversity  (DNA-based richness and abundance)",
@@ -4867,7 +4867,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "Photosynthesis": {
                            "name": "Photosynthesis (e.g. indexes: NDVI (Normalized Difference Vegetation Index), VCI Copernicus (Vegetation Condition Index), fPAR (Fraction of Photosynthetically active radiation), LAI (Leaf Area Index)) (CI)",
@@ -4983,7 +4983,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "Available-water-capacity": {
                            "name": "Available water capacity (index)",
@@ -5229,7 +5229,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Landscape-fragmentation": {
                            "name": "Landscape fragmentation (CI)",
@@ -5288,7 +5288,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity",
                      "indicator": {
                         "n.a.": {
                            "name": "n.a.",
@@ -5304,7 +5304,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU Nature directives",
                      "indicator": {
                         "Conservation-status-trends-habitats": {
                            "name": "Conservation status and trends of habitats of Community interest associated to heathlands (%)",
@@ -5429,7 +5429,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural soil attributes",
                      "indicator": {
                         "Soil-biodiversity": {
                            "name": "Soil biodiversity  (DNA-based richness and abundance)",
@@ -5455,7 +5455,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional ecosystem attributes (general)",
                      "indicator": {
                         "n.a.": {
                            "name": "n.a.",
@@ -5471,7 +5471,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "Available-water-capacity)": {
                            "name": "Available water capacity (index)",
@@ -5640,7 +5640,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Landscape-fragmentation": {
                            "name": "Landscape fragmentation (CI)",
@@ -5699,7 +5699,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity and abundance",
                      "indicator": {
                         "n.a.": {
                            "name": "n.a.",
@@ -5715,7 +5715,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU nature directives",
                      "indicator": {
                         "Conservation-status-trends-habitats": {
                            "name": "Conservation status and trends of habitats of Community interest associated to heathlands (%)",
@@ -5840,7 +5840,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural soil attributes",
                      "indicator": {
                         "Soil-biodiversity": {
                            "name": "Soil biodiversity  (DNA-based richness and abundance)",
@@ -5866,7 +5866,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional ecosystem attributes (general)",
                      "indicator": {
                         "n.a.": {
                            "name": "n.a.",
@@ -5882,7 +5882,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "Available-water-capacity)": {
                            "name": "Available water capacity (index)",
@@ -6094,7 +6094,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Landscape-fragmentation": {
                            "name": "Landscape fragmentation (CI)",
@@ -6170,7 +6170,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity",
                      "indicator": {
                         "Living-Planet-Index-Mediterranean": {
                            "name": "Living Planet Index for Mediterranean wetlands (CI)",
@@ -6250,7 +6250,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU Nature directives",
                      "indicator": {
                         "Conservation-status-trends-habitats": {
                            "name": "Conservation status and trends of habitats of Community interest associated to heathlands (%)",
@@ -6381,7 +6381,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural Soil attributes",
                      "indicator": {
                         "Soil-biodiversity": {
                            "name": "Soil biodiversity  (DNA-based richness and abundance)",
@@ -6412,7 +6412,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional Soil attributes (general)",
                      "indicator": {
                         "n.a.": {
                            "name": "n.a.",
@@ -6428,7 +6428,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Functional soil attributes",
                      "indicator": {
                         "Available-water-capacity)": {
                            "name": "Available water capacity (index)",
@@ -6944,7 +6944,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Ecological Status (CI)": {
                            "name": "Ecological Status (CI)",
@@ -6982,7 +6982,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity and abundance",
                      "indicator": {
                         "Biological-quality-elements": {
                            "name": "Biological quality elements (BQEs) collected to assess ecological status (ex. composition and abundance of aquatic flora, benthic invertebrate fauna, fish fauna, phytoplankton)",
@@ -7038,7 +7038,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU nature directives",
                      "indicator": {
                         "Proportion-freshwater": {
                            "name": "Proportion of freshwater covered by Natura 2000 (%) ",
@@ -7672,7 +7672,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes (general)",
                      "indicator": {
                         "Ecological status (WFD)": {
                            "name": "Ecological status (WFD)",
@@ -7803,7 +7803,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes based on species diversity and abundance",
                      "indicator": {
                         "Population-abundance": {
                            "name": "Population abundance (MSFD D1C2) (number of individuals/species or tonne/species)",
@@ -7982,7 +7982,7 @@
             "details": {
                "class": [
                   {
-                     "name": "",
+                     "name": "Structural ecosystem attributes monitored under the EU nature directives",
                      "indicator": {
                         "Natura-2000": {
                            "name": "Natura 2000 and Marine protected areas (% surface area)",

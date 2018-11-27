@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
-/dist
+# /dist - so we don't have to run yarn on production
 
 # local env files
 .env.local

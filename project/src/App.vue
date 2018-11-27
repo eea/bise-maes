@@ -669,7 +669,7 @@ export default {
   created() {
       this.tables = tables;
       axios
-      .get("./data.json")
+      .get(process.env.BASE_URL + "data.json")
       .then(response => {
         this.bise = response.data.bise;
         this.biseEco = response.data.biseEco;

@@ -1,0 +1,18 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="bise">
+
+  <browser:page
+    name="maes-presentation"
+    for="*"
+    template="dist/index.html"
+    permission="zope2.View"
+    />
+
+  <browser:resourceDirectory
+    name="bise-maes"
+    directory="dist"
+    />
+
+</configure>

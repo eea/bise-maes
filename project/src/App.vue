@@ -15,16 +15,20 @@
           </button>
         </transition>
       </div>
-      <!-- actual heading -->
+      <!-- actual heading-->
       <div
         v-for="header in biseHeader"
         class="col-1-sm menu"
         @mouseenter="handleMouseEnterHeader(header.code)"
         @mouseleave="handleMouseLeaveHeader"
         @click="handleHeaderClick(header)"
-        :class="{ 'accentuate': (selectedHeaderTemp === header.code), 'selected': arrowsStyle.header[header.code] !== 'lightgrey'}"
+        :class="{
+          'accentuate': (selectedHeaderTemp === header.code), 
+          'selected': arrowsStyle.header[header.code] !== 'lightgrey'
+        }"
       >
-        <div class="instrument-heading-wrap">
+        <div class="instrument-heading-wrap"
+          :style="{ 'background-color': arrowsStyle.header[header.code] !== 'lightgrey' ? arrowsStyle.header[header.code] : '#fff'}" >
           <p class="instrument-heading-text">{{header.name}}</p>
           <p
             class="instrument-heading-bar"
@@ -40,7 +44,6 @@
           viewBox="0 0 448 512"
           class="arrow-top"
         >
-
           <path
             :style="{ 'fill': arrowsStyle.header[header.code]}"
             d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
@@ -62,12 +65,15 @@
             class="ecosystem-item"
             @mouseenter="handleMouseEnterEco(ecosystemItem.code)"
             @mouseleave="handleMouseLeaveEco"
-            @click="handleEcoClick(ecosystemItem)"
+            @click="handleEcoClick(ecosystemItem.categoryCode)"
             :class="{ 'accentuate': (selectedEcoTemp === ecosystemItem.code), 'selected': arrowsStyle.eco[ecosystemItem.code] !== 'lightgrey'}"
           >
-            <div class="ecosystem-wrap">
+            <div class="ecosystem-wrap"
+              :style="{ 'background-color': arrowsStyle.eco[ecosystemItem.code] !== 'lightgrey' ? arrowsStyle.eco[ecosystemItem.code] : '#fff' }"
+            >
               <p class="ecosystem-text">{{ecosystemItem.name}}</p>
             </div>
+
             <svg 
               aria-hidden="true"
               data-prefix="fas"
@@ -76,7 +82,6 @@
               viewBox="0 0 448 512"
               class="arrow-right"
             >
-
               <path
                 :style="{ 'fill': arrowsStyle.eco[ecosystemItem.code]}"
                 d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
@@ -84,10 +89,12 @@
             </svg>
 
           </div>
+
           <div class="ecosystem-item" v-else>
             <div class="ecosystem-wrap header"
-              :class="ecosystemClass(ecosystemItem.code)"
-              @click="ecosystemItemFunction(ecosystemItem.code)"
+              :class="ecosystemClass(ecosystemItem.categoryCode)"
+              @click="ecosystemItemFunction(ecosystemItem.categoryCode)"
+              :style="{ 'background-color': ecosystemClass(ecosystemItem.categoryCode) === 'selected' ? '#e29292' : '#fff' }"
             >
             <div class="ecosystem-text">
                {{ecosystemItem.name}}
@@ -143,45 +150,50 @@
                     <p>{{itemClass.name}}</p>
                   </div>
                   <ul class="col-10">
+                    <!-- 
+                      :class="{ 'selected-indicator': selectedIndicators[indicatorKey] }" -->
                     <li 
                       v-for="(indicatorValue, indicatorKey) in itemClass.indicator"
-                      @click="handleClickIndicator(indicatorValue, indicatorKey)"
                       class="indicator-li"
+                      @click="handleClickIndicator(indicatorValue, indicatorKey)"
                       :style="{ 'font-weight': indicatorValue.bold ? 'bold' : 'normal'}"
-                      :class="{ 'selected-indicator': selectedIndicators[indicatorKey] }"
-                    >{{indicatorValue.name}}
+                    >
+                      <div v-if="!selectedIndicators[indicatorKey]">{{indicatorValue.name}}</div>
+
+                      <!-- INDICATOR DETAILS -->
+                      <div
+                        v-else
+                        class="modal"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                            </div>
+                            <div class="modal-body">
+                              <ul class="col-10">
+                                <li
+                                  v-for="policy in allPolicies"
+                                  v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
+                                >
+                                  <svg
+                                    v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                                    class="icon-svg"
+                                  >
+                                    <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                                  </svg>
+
+                                  <span>{{policy.name}}</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- INDICATOR DETAILS -->
+
                     </li>
                   </ul>
-                </div>
-              </div>
-            </div>
-
-            <div
-              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
-              class="modal col-6"
-            >
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
-                  </div>
-                  <div class="modal-body">
-                    <ul class="col-10">
-                      <li
-                        v-for="policy in allPolicies"
-                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
-                      >
-                        <svg
-                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
-                          class="icon-svg"
-                        >
-                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
-                        </svg>
-
-                        <span>{{policy.name}}</span>
-                    </li>
-                    </ul>
-                  </div>
                 </div>
               </div>
             </div>
@@ -322,11 +334,12 @@
                   </tr>
                 </tbody>
               </table>
+              <p><i>Table 5.1. Core set of pressure indicators for terrestrial and freshwater ecosystem types - <a href="http://ec.europa.eu/environment/nature/knowledge/ecosystem_assessment/pdf/5th MAES report.pdf">5th MAES Condition Report</a></i></p>
             </div>
 
             <div
               v-for="(indicatorValue, indicatorKey) in selectedIndicators"
-              class="modal col-6"
+              class="modal"
             >
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -399,11 +412,13 @@
                   </tr>
                 </tbody>
               </table>
+              <p><i>Table 5.2. Core set of condition indicators for terrestrial and freshwater ecosystem types - <a href="http://ec.europa.eu/environment/nature/knowledge/ecosystem_assessment/pdf/5th MAES report.pdf">5th MAES Condition Report</a></i></p>
+
             </div>
 
             <div
               v-for="(indicatorValue, indicatorKey) in selectedIndicators"
-              class="modal col-6"
+              class="modal"
             >
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -476,11 +491,12 @@
                   </tr>
                 </tbody>
               </table>
+              <p><i>Table 5.3. Core set of pressure and ecosystem condition indicators for marine ecosystem types - <a href="http://ec.europa.eu/environment/nature/knowledge/ecosystem_assessment/pdf/5th MAES report.pdf">5th MAES Condition Report</a></i></p>
             </div>
 
             <div
               v-for="(indicatorValue, indicatorKey) in selectedIndicators"
-              class="modal col-6"
+              class="modal"
             >
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -545,40 +561,42 @@
                       @click="handleClickIndicator(indicatorValue, indicatorKey)"
                       class="indicator-li"
                       :style="{ 'font-weight': indicatorValue.bold ? 'bold' : 'normal'}"
-                      :class="{ 'selected-indicator': selectedIndicators[indicatorKey] }"
-                    >{{indicatorValue.name}}
+                    >
+                      <div v-if="!selectedIndicators[indicatorKey]">{{indicatorValue.name}}</div>
+
+                      <!-- INDICATOR DETAILS -->
+                      <div
+                        v-else
+                        class="modal"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">{{indicatorValue.name}}</h5>
+                            </div>
+                            <div class="modal-body">
+                              <ul class="col-10">
+                                <li
+                                  v-for="policy in allPolicies"
+                                  v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
+                                >
+                                  <svg
+                                    v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
+                                    class="icon-svg"
+                                  >
+                                    <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
+                                  </svg>
+
+                                  <span>{{policy.name}}</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END INDICATOR DETAILS -->
                     </li>
                   </ul>
-                </div>
-              </div>
-            </div>
-
-            <div
-              v-for="(indicatorValue, indicatorKey) in selectedIndicators"
-              class="modal col-6"
-            >
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">{{indicatorValue.name}}</h5>
-                  </div>
-                  <div class="modal-body">
-                    <ul class="col-10">
-                      <li
-                        v-for="policy in allPolicies"
-                        v-if="(indicatorValue.data[policy.code]) && policy.code !== 'policyUse' && policy.code !== 'data'"
-                      >
-                        <svg
-                          v-if="policy.code !== 'policyUse' && policy.code !== 'data'"
-                          class="icon-svg"
-                        >
-                          <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
-                        </svg>
-
-                        <span>{{policy.name}}</span>
-                    </li>
-                    </ul>
-                  </div>
                 </div>
               </div>
             </div>
@@ -591,12 +609,12 @@
 </template>
 
 <script>
-
+import Vue from 'vue';
 import axios from 'axios';
 import tables from './assets/tables.js'
 
 const notSelectedColour = 'lightgrey';
-const selectedColour = '#f35555';
+const selectedColour = '#e29292';
 let displayedClassNames = {};
 
 export default {
@@ -697,7 +715,7 @@ export default {
           }
           break;
         case 'ecosystem_header':
-          if(this.ecoLine === 'condition'){
+          if(this.ecoLine === 'condition' || this.ecoLine === 'marine' || this.ecoLine === 'water'){
             return 'selected'
           }
           break;
@@ -721,85 +739,96 @@ export default {
       });
     },
 
-    manageArrows(expr, ecoItem, headerItem) {
+    manageArrows(expr, ecoItem, headerItemCode) {
       let tempArrowStyle = JSON.parse(JSON.stringify(this.arrowsStyle));
+      const headerItem = this.biseHeader.find(function(element) {
+        return element.code === headerItemCode;
+      });
+      const theSelectedColour = headerItem ? headerItem.colour : selectedColour;
+
       switch (expr) {
         case 'colourAllHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
             if(key !== 'marine') {
-              tempArrowStyle.header[key] = selectedColour;
+              tempArrowStyle.header[key] = theSelectedColour;
             }
           });
-          tempArrowStyle.eco[ecoItem] = selectedColour;
+          tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
           case 'colourOnlyUrban':
             Object.keys(tempArrowStyle.header).map((key) => {
               if(key === 'urban') {
-                tempArrowStyle.header[key] = selectedColour;
+                tempArrowStyle.header[key] = theSelectedColour;
               }
             });
-            tempArrowStyle.eco[ecoItem] = selectedColour;
+            tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
           case 'colourAllAllHeaders':
             Object.keys(tempArrowStyle.header).map((key) => {
-                tempArrowStyle.header[key] = selectedColour;
+              tempArrowStyle.header[key] = theSelectedColour;
             });
-            tempArrowStyle.eco[ecoItem] = selectedColour;
+            tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
         case 'colourAllWaterHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
-
+            
             if(key === 'marine') {
               tempArrowStyle.header[key] = notSelectedColour;
             } else {
-              tempArrowStyle.header[key] = selectedColour;
+              tempArrowStyle.header[key] = theSelectedColour;
             }
 
           });
-          tempArrowStyle.eco[ecoItem] = selectedColour;
+          tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
         case 'colourOnlyWaterHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
-
             if(['rivers','wetland'].includes(key)) {
-              tempArrowStyle.header[key] = selectedColour;
+              tempArrowStyle.header[key] = theSelectedColour;
             } else {
               tempArrowStyle.header[key] = notSelectedColour;
             }
-
           });
-          tempArrowStyle.eco[ecoItem] = selectedColour;
+          Object.keys(tempArrowStyle.eco).map((key) => {
+            if(!['pressure','pressure_header'].includes(key))
+              tempArrowStyle.eco[key] = theSelectedColour;
+          });
+          tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
         case 'colourAllMarineHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
             if(key === 'marine') {
-              tempArrowStyle.header[key] = selectedColour;
+              tempArrowStyle.header[key] = theSelectedColour;
             } else {
               tempArrowStyle.header[key] = notSelectedColour;
             }
           });
-          tempArrowStyle.eco[ecoItem] = selectedColour;
+          Object.keys(tempArrowStyle.eco).map((key) => {
+            if(!['pressure','pressure_header'].includes(key))
+              tempArrowStyle.eco[key] = theSelectedColour;
+          });
+          tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
         case 'colourAllEco':
           Object.keys(tempArrowStyle.eco).map((key) => {
-            tempArrowStyle.eco[key] = selectedColour;
+            tempArrowStyle.eco[key] = theSelectedColour;
           });
-          tempArrowStyle.header[headerItem] = selectedColour;
+          tempArrowStyle.header[headerItemCode] = theSelectedColour;
           break;
         case 'colourAllEcoNoPressure':
           Object.keys(tempArrowStyle.eco).map((key) => {
             if(!['pressure','pressure_header'].includes(key))
-              tempArrowStyle.eco[key] = selectedColour;
+              tempArrowStyle.eco[key] = theSelectedColour;
           });
-          tempArrowStyle.header[headerItem] = selectedColour;
+          tempArrowStyle.header[headerItemCode] = theSelectedColour;
           break;
         case 'colourOnlyTwo':
-          tempArrowStyle.eco[ecoItem] = selectedColour;
-          tempArrowStyle.header[headerItem] = selectedColour;
+          tempArrowStyle.eco[ecoItem] = theSelectedColour;
+          tempArrowStyle.header[headerItemCode] = theSelectedColour;
           break;
 
         case 'colourOnlyOne':
-          tempArrowStyle.eco[ecoItem] = selectedColour;
+          tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
         case 'resetAll':
           Object.keys(tempArrowStyle.header).map((key) => {
@@ -821,17 +850,17 @@ export default {
       this.selectedHeaderItem = this.bise[ev.code];
     },
 
-    // TODO refactor
     handleEcoClick(ev) {
       let result = [];
-      this.selectedEco = ev.code;
+      this.selectedEco = ev;
       this.resetSelected();
 
       Object.keys(this.bise).map((value) => {
         result.push(this.bise[value]);
       });
       
-      this.ecoLine = ev.code === 'pressure' ? 'pressure' : 'condition';
+      this.ecoLine = ev === 'pressure' ? 'pressure' : 'condition';
+      this.ecosystemItemFunction(ev);
       this.selectedEcoItem = result.slice();        
     },
 
@@ -852,12 +881,12 @@ export default {
       this.ecoLine = 'condition';
     },
 
-    handleSelectedWaterEcoCondition() {
+    handleSelectedWaterEcoCondition(ev) {
       this.manageArrows('colourAllWaterHeaders', this.selectedEco, null);
       this.ecoLine = 'water';
     },
 
-    handleSelectedMarineEcoCondition() {
+    handleSelectedMarineEcoCondition(ev) {
       this.manageArrows('colourAllMarineHeaders', this.selectedEco, null);
       this.ecoLine = 'marine';
     },
@@ -916,15 +945,13 @@ export default {
       let theObj = {};
 
       theObj[indicatorKey] = indicatorValue;
+
+      if(!indicatorValue || indicatorValue.name === "n.a.") return;
+      
       if(this.selectedIndicators[indicatorKey]) {
         Vue.delete(this.selectedIndicators, indicatorKey)  
-      }
-       else {
+      } else {
         this.selectedIndicators = Object.assign({}, this.selectedIndicators, theObj);
-        this.$nextTick(function(){
-          let modal = document.querySelector('.modal.col-6')
-          modal.scrollIntoView();
-        })  
       }
     },
 
@@ -934,6 +961,7 @@ export default {
 
       for (let i = 0; i < pressureInHeader.length; i++) {
         const pressureClass = pressureInHeader[i];
+
         if(pressureClass.code === classItem.code) {
           response = pressureClass.indicator[indicatorKey];
           break;
@@ -1175,7 +1203,7 @@ body {
 .selected.lateral-text-ontop,
 .selected.lateral-text-onbottom
 {
-  background-color: #f35555;
+  /* background-color: #f35555; */
   color: white;
   border: 1px solid lightgrey!important;
 }
@@ -1193,7 +1221,7 @@ body {
   font-size: 1.5rem;
 }
 .detail {
-  min-height: 150px;
+  /* min-height: 150px; */
   border-bottom: 1px solid #c4bfb6;
   overflow: hidden;
 }
@@ -1210,6 +1238,7 @@ body {
   padding: 5px;
   min-height: 30px;
   text-align: left;
+  cursor: pointer;
 }
 .indicator-li::after {
   display: block;
@@ -1220,7 +1249,7 @@ body {
 }
 .selected-indicator {
   font-weight: 300;
-  background-color: #f25555;
+  /* background-color: #f25555; */
   padding: 5px;
   border-radius: 2.3rem;
   border-bottom: 1px solid #c4bfb6;
@@ -1410,8 +1439,6 @@ button{
 .lateral-text-onbottom {
   height: calc(6*(60px + 15px));
 }
-
-
 
 /*table styles*/
 .shadow-z-1 {
@@ -1971,34 +1998,20 @@ button{
 
 
 .ecosystem-wrap.header.selected {
-      background-color: #f35555;
-    color: white;
-    border: 1px solid lightgrey!important;
+  /* background-color: #f35555; */
+  color: white;
+  border: 1px solid lightgrey!important;
 }
-
-/*.menu li.not-visible:first-of-type {
-      visibility: visible;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-    background: white!important;
-    opacity: 1!important;
-    pointer-events: none;
-}*/
-
-
-
 
 .ecosystem-wrap.header {
   font-weight: bold;
-    font-size: 1.3rem;
-    background: none;
-    border-bottom: 1px solid #eee;
-    border-radius: 0;
-    margin: 0;
-    width: 100%;
-    padding: 1rem;
+  font-size: 1.3rem;
+  background: none;
+  border-bottom: 1px solid #eee;
+  border-radius: 0;
+  margin: 0;
+  width: 100%;
+  padding: 1rem;
 }
 
 .ecosystem-wrap.header:hover {
@@ -2010,8 +2023,8 @@ button{
 }
 
 .header .ecosystem-text {
-      padding: 0;
-    width: 100%;
+  padding: 0;
+  width: 100%;
 }
 
 .menu li {
@@ -2030,22 +2043,20 @@ button{
 }
 
 .large-btn.left {
-    width: 50%;
-    background: #ff9310;
-    color: white;
+  width: 50%;
+  background: #ff9310;
+  color: white;
   margin-bottom: 0;
-
-    border-radius: 0;
+  border-radius: 0;
 }
 
 .large-btn.right {
-    width: 50%;
-    background: #668dcc;
-    color: white;
-    float: right;
-    border-radius: 0;
+  width: 50%;
+  background: #668dcc;
+  color: white;
+  float: right;
+  border-radius: 0;
   margin-bottom: 0;
-
 }
 
 .large-btn:hover {
@@ -2069,7 +2080,6 @@ button{
   position: relative;
 }
 
-
 .item.full {
   position: absolute;
   width: 100%;
@@ -2084,8 +2094,8 @@ button{
 }
 
 .table.top-border tr td {
-      border-top: 1px solid #e0e0e0;
-      border-bottom: none;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: none;
 }
 
 .table.middle tr td {
@@ -2093,10 +2103,18 @@ button{
 }
 
 .table.full-width th {
-    text-align: left;
+  text-align: left;
 }
 
 .table.full-bordered td{
   border: 1px solid #e0e0e0;
+}
+
+.indicator-li .modal-dialog {
+  max-width: 100%;
+  margin: 0;
+}
+.indicator-li .modal-header {
+  padding-left: .5rem;
 }
 </style>

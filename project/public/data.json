@@ -8109,45 +8109,55 @@
       {
          "code": "pressure_header",
          "name": "Pressure",
-         "type": "header"
+         "type": "header",
+         "categoryCode": "pressure_header"
       },
       {
          "code": "pressure",
-         "name": "Pressure on ecosystem"
+         "name": "Pressure on ecosystem",
+         "categoryCode": "pressure_header"
       },
       {
          "code": "ecosystem_header",
          "name": "Ecosystem condition",
-         "type": "header"
+         "type": "header",
+         "categoryCode": "ecosystem_header"
       },
       {
          "code": "environmental",
-         "name": "Environmental quality"
+         "name": "Environmental quality",
+         "categoryCode": "ecosystem_header"
       },
       {
          "code": "structural",
-         "name": "Structural ecosystem attributes (general)"
+         "name": "Structural ecosystem attributes (general)",
+         "categoryCode": "ecosystem_header"
       },
       {
          "code": "species",
-         "name": "Structural ecosystem attributes based on species diversity and abundance"
+         "name": "Structural ecosystem attributes based on species diversity and abundance",
+         "categoryCode": "ecosystem_header"
       },
       {
          "code": "monitored",
-         "name": "Structural ecosystem attributes monitored under the EU nature directives"
+         "name": "Structural ecosystem attributes monitored under the EU nature directives",
+         "categoryCode": "ecosystem_header"
       },
       {
          "code": "soil",
-         "name": "Structural soil attributes"
+         "name": "Structural soil attributes",
+         "categoryCode": "ecosystem_header"
       },
       {
          "code": "functional-soil",
-         "name": "Functional soil attributes"
+         "name": "Functional soil attributes",
+         "categoryCode": "ecosystem_header"
       },
       {
          "code": "services_header",
          "name": "Ecosystem services",
-         "type": "header"
+         "type": "header",
+         "categoryCode": "services_header"
       }
    ],
 

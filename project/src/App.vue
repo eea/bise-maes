@@ -40,10 +40,7 @@
           viewBox="0 0 448 512"
           class="arrow-top"
         >
-        <!-- <path
-          :style="{ 'fill': selectedHeader === header.code ? selectedColour : notSelectedColour}"
-          d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
-        ></path> -->
+
           <path
             :style="{ 'fill': arrowsStyle.header[header.code]}"
             d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
@@ -57,20 +54,7 @@
 
       <!-- ecosystem-heading -->
       <div class="col-4 ecosystem-heading">
-      <!--   <div class="col-1 lateral-text-wrapper">
-          <div
-            class="lateral-text lateral-text-ontop"
-            :class="{'selected': ecoLine === 'pressure'}"
-            @click="handleEcoPressureLineClick()"
-          >Pressure</div>
-          <div
-            class="lateral-text lateral-text-onbottom"
-            :class="{'selected': ecoLine && ecoLine !== 'pressure'}"
-            @click="handleEcoConditionLineClick()"
-          >Ecosystem condition</div>          
-        </div> -->
 
-        <!-- <canvas class="col-1-sm" id="myCanvas" width="50" height="550"></canvas> -->
         <div class="ecosystem-heading-content">
           <div 
             v-for="ecosystemItem in biseEco"
@@ -83,7 +67,6 @@
           >
             <div class="ecosystem-wrap">
               <p class="ecosystem-text">{{ecosystemItem.name}}</p>
-              <!-- <p class="ecosystem-bar col-1-sm"></p> -->
             </div>
             <svg 
               aria-hidden="true"
@@ -93,10 +76,7 @@
               viewBox="0 0 448 512"
               class="arrow-right"
             >
-            <!-- <path
-              :style="{ 'fill': selectedEco === ecosystemItem.code ? selectedColour : notSelectedColour}"
-              d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
-            ></path> -->
+
               <path
                 :style="{ 'fill': arrowsStyle.eco[ecosystemItem.code]}"
                 d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
@@ -197,10 +177,7 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -370,10 +347,7 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -450,10 +424,7 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -530,10 +501,7 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -606,10 +574,7 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
+
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -747,8 +712,6 @@ export default {
       }
     },
 
-
-
     initArrowStyles() {
       this.biseEco.map((eco) => {
         this.arrowsStyle.eco[eco.code] = notSelectedColour;
@@ -757,6 +720,7 @@ export default {
         this.arrowsStyle.header[header.code] = notSelectedColour;
       });
     },
+
     manageArrows(expr, ecoItem, headerItem) {
       let tempArrowStyle = JSON.parse(JSON.stringify(this.arrowsStyle));
       switch (expr) {
@@ -850,22 +814,18 @@ export default {
 
       this.arrowsStyle = Object.assign({}, tempArrowStyle);
     },
+
     handleHeaderClick(ev) {
       this.resetSelected();
       this.manageArrows('colourAllEco', null, ev.code);
       this.selectedHeaderItem = this.bise[ev.code];
     },
+
     // TODO refactor
     handleEcoClick(ev) {
       let result = [];
       this.selectedEco = ev.code;
       this.resetSelected();
-
-      if(ev.code === 'pressure') {
-        // this.manageArrows('colourAllHeaders', ev.code, null);
-      } else {
-        // this.manageArrows('colourOnlyOne', ev.code, null)
-      }
 
       Object.keys(this.bise).map((value) => {
         result.push(this.bise[value]);
@@ -874,10 +834,9 @@ export default {
       this.ecoLine = ev.code === 'pressure' ? 'pressure' : 'condition';
       this.selectedEcoItem = result.slice();        
     },
-    handleEcoPressureLineClick() {
-      console.log('happening')
-      this.resetSelected();
 
+    handleEcoPressureLineClick() {
+      this.resetSelected();
       this.ecoLine = 'pressure';
       this.manageArrows('colourAllHeaders', 'pressure', null);
     },
@@ -887,18 +846,17 @@ export default {
       this.ecoLine = 'services';
     },
 
-
     handleEcoConditionLineClick() {
       this.resetSelected();
-
       this.manageArrows('colourAllEcoNoPressure', null);
-
       this.ecoLine = 'condition';
     },
+
     handleSelectedWaterEcoCondition() {
       this.manageArrows('colourAllWaterHeaders', this.selectedEco, null);
       this.ecoLine = 'water';
     },
+
     handleSelectedMarineEcoCondition() {
       this.manageArrows('colourAllMarineHeaders', this.selectedEco, null);
       this.ecoLine = 'marine';
@@ -915,35 +873,36 @@ export default {
     },
 
     handleSelectedTotalServices(){
-
-        this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
-        this.ecoLine = 'total_service';
-
+      this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+      this.ecoLine = 'total_service';
     },
 
     handleSelectedAvailableServices(){
-
-        this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
-        this.ecoLine = 'available_service';
+      this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+      this.ecoLine = 'available_service';
     },
 
     handleSelectedUrbanServices(){
-        this.manageArrows('colourOnlyUrban', this.selectedEco, null);
-        this.ecoLine = 'urban_service';
+      this.manageArrows('colourOnlyUrban', this.selectedEco, null);
+      this.ecoLine = 'urban_service';
     },
 
     handleMouseEnterHeader(ev) {
       this.selectedHeaderTemp = ev;
     },
+
     handleMouseLeaveHeader() {
       this.selectedHeaderTemp = null;
     },
+
     handleMouseEnterEco(ev) {
       this.selectedEcoTemp = ev;
     },
+
     handleMouseLeaveEco() {
       this.selectedEcoTemp = null;
     },
+
     handleSelected(key, ecosysKey) {
       this.resetSelected();
       this.manageArrows('colourOnlyTwo', ecosysKey, key)
@@ -952,6 +911,7 @@ export default {
       this.selectedHeader = key;
       this.selectedColour = selectedColour;      
     },
+
     handleClickIndicator(indicatorValue, indicatorKey) {
       let theObj = {};
 
@@ -966,10 +926,8 @@ export default {
           modal.scrollIntoView();
         })  
       }
-
-    
-
     },
+
     handleSelectedBullet(headerKey, indicatorKey, classItem) {
       let pressureInHeader = this.bise[headerKey].pressure.details.class;
       let response = null;
@@ -986,6 +944,7 @@ export default {
         this.handleClickIndicator(response, indicatorKey);
       }
     },
+
     resetSelected() {
       this.manageArrows('resetAll');
       displayedClassNames = {};
@@ -998,6 +957,7 @@ export default {
       this.selectedIndicators = Object.assign({}, {});
       this.selectedColour = notSelectedColour;
     },
+
     showClassNameIndicator() {
       for (let i = 0; i < this.selectedItem.details.class.length; i++) {
         const element = this.selectedItem.details.class[i];
@@ -1007,13 +967,14 @@ export default {
       }
       return false;
     },
+
     showTable() {
       let response = !this.selectedItem && !this.selectedHeaderItem && !this.selectedEcoItem.length > 0;
       response = !this.ecoLine && response;
 
-
       return response;
     },
+
     computeClassNames(className, indicatorName) {
       let result = false;
 
@@ -1027,10 +988,12 @@ export default {
 
       return result;
     },
+
     doBullets(header){
       if(header) return '•'
       else return ''
     },
+
     showIcon(policyData, policyCode) {
       if(policyCode !== 'policyUse' && policyCode !== 'data') {
         if(parseInt(policyData) === 1) {
@@ -1044,9 +1007,6 @@ export default {
     },
   }
 };
-
-
-
 
 </script>
 

@@ -9059,8 +9059,6 @@ let app = new Vue({
       }
     },
 
-
-
     initArrowStyles() {
       this.biseEco.map((eco) => {
         this.arrowsStyle.eco[eco.code] = notSelectedColour;
@@ -9069,6 +9067,7 @@ let app = new Vue({
         this.arrowsStyle.header[header.code] = notSelectedColour;
       });
     },
+
     manageArrows(expr, ecoItem, headerItem) {
       let tempArrowStyle = JSON.parse(JSON.stringify(this.arrowsStyle));
       switch (expr) {
@@ -9102,7 +9101,6 @@ let app = new Vue({
             } else {
               tempArrowStyle.header[key] = selectedColour;
             }
-
           });
           tempArrowStyle.eco[ecoItem] = selectedColour;
           break;
@@ -9114,7 +9112,6 @@ let app = new Vue({
             } else {
               tempArrowStyle.header[key] = notSelectedColour;
             }
-
           });
           tempArrowStyle.eco[ecoItem] = selectedColour;
           break;
@@ -9145,7 +9142,6 @@ let app = new Vue({
           tempArrowStyle.eco[ecoItem] = selectedColour;
           tempArrowStyle.header[headerItem] = selectedColour;
           break;
-
         case 'colourOnlyOne':
           tempArrowStyle.eco[ecoItem] = selectedColour;
           break;
@@ -9162,6 +9158,7 @@ let app = new Vue({
 
       this.arrowsStyle = Object.assign({}, tempArrowStyle);
     },
+
     handleHeaderClick(ev) {
       this.resetSelected();
       this.manageArrows('colourAllEco', null, ev.code);
@@ -9173,12 +9170,6 @@ let app = new Vue({
       this.selectedEco = ev.code;
       this.resetSelected();
 
-      if(ev.code === 'pressure') {
-        // this.manageArrows('colourAllHeaders', ev.code, null);
-      } else {
-        // this.manageArrows('colourOnlyOne', ev.code, null)
-      }
-
       Object.keys(this.bise).map((value) => {
         result.push(this.bise[value]);
       });
@@ -9186,8 +9177,8 @@ let app = new Vue({
       this.ecoLine = ev.code === 'pressure' ? 'pressure' : 'condition';
       this.selectedEcoItem = result.slice();        
     },
+
     handleEcoPressureLineClick() {
-      console.log('happening')
       this.resetSelected();
 
       this.ecoLine = 'pressure';
@@ -9199,18 +9190,17 @@ let app = new Vue({
       this.ecoLine = 'services';
     },
 
-
     handleEcoConditionLineClick() {
       this.resetSelected();
-
       this.manageArrows('colourAllEcoNoPressure', null);
-
       this.ecoLine = 'condition';
     },
+
     handleSelectedWaterEcoCondition() {
       this.manageArrows('colourAllWaterHeaders', this.selectedEco, null);
       this.ecoLine = 'water';
     },
+
     handleSelectedMarineEcoCondition() {
       this.manageArrows('colourAllMarineHeaders', this.selectedEco, null);
       this.ecoLine = 'marine';
@@ -9227,35 +9217,36 @@ let app = new Vue({
     },
 
     handleSelectedTotalServices(){
-
-        this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
-        this.ecoLine = 'total_service';
-
+      this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+      this.ecoLine = 'total_service';
     },
 
     handleSelectedAvailableServices(){
-
-        this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
-        this.ecoLine = 'available_service';
+      this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+      this.ecoLine = 'available_service';
     },
 
     handleSelectedUrbanServices(){
-        this.manageArrows('colourOnlyUrban', this.selectedEco, null);
-        this.ecoLine = 'urban_service';
+      this.manageArrows('colourOnlyUrban', this.selectedEco, null);
+      this.ecoLine = 'urban_service';
     },
 
     handleMouseEnterHeader(ev) {
       this.selectedHeaderTemp = ev;
     },
+
     handleMouseLeaveHeader() {
       this.selectedHeaderTemp = null;
     },
+
     handleMouseEnterEco(ev) {
       this.selectedEcoTemp = ev;
     },
+
     handleMouseLeaveEco() {
       this.selectedEcoTemp = null;
     },
+
     handleSelected(key, ecosysKey) {
       this.resetSelected();
       this.manageArrows('colourOnlyTwo', ecosysKey, key)
@@ -9264,24 +9255,22 @@ let app = new Vue({
       this.selectedHeader = key;
       this.selectedColour = selectedColour;      
     },
+
     handleClickIndicator(indicatorValue, indicatorKey) {
       let theObj = {};
 
       theObj[indicatorKey] = indicatorValue;
       if(this.selectedIndicators[indicatorKey]) {
         Vue.delete(this.selectedIndicators, indicatorKey)  
-      }
-       else {
+      } else {
         this.selectedIndicators = Object.assign({}, this.selectedIndicators, theObj);
         this.$nextTick(function(){
           let modal = document.querySelector('.modal.col-6')
           modal.scrollIntoView();
         })  
       }
-
-    
-
     },
+
     handleSelectedBullet(headerKey, indicatorKey, classItem) {
       let pressureInHeader = this.bise[headerKey].pressure.details.class;
       let response = null;
@@ -9298,6 +9287,7 @@ let app = new Vue({
         this.handleClickIndicator(response, indicatorKey);
       }
     },
+
     resetSelected() {
       this.manageArrows('resetAll');
       displayedClassNames = {};
@@ -9310,6 +9300,7 @@ let app = new Vue({
       this.selectedIndicators = Object.assign({}, {});
       this.selectedColour = notSelectedColour;
     },
+
     showClassNameIndicator() {
       for (let i = 0; i < this.selectedItem.details.class.length; i++) {
         const element = this.selectedItem.details.class[i];
@@ -9319,13 +9310,14 @@ let app = new Vue({
       }
       return false;
     },
+
     showTable() {
       let response = !this.selectedItem && !this.selectedHeaderItem && !this.selectedEcoItem.length > 0;
       response = !this.ecoLine && response;
 
-
       return response;
     },
+
     computeClassNames(className, indicatorName) {
       let result = false;
 
@@ -9339,10 +9331,12 @@ let app = new Vue({
 
       return result;
     },
+
     doBullets(header){
       if(header) return '•'
       else return ''
     },
+
     showIcon(policyData, policyCode) {
       if(policyCode !== 'policyUse' && policyCode !== 'data') {
         if(parseInt(policyData) === 1) {
@@ -9356,8 +9350,4 @@ let app = new Vue({
     },
   }
 });
-
-
-
-
-  });
+});

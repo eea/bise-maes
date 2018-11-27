@@ -67,10 +67,6 @@
           viewBox="0 0 448 512"
           class="arrow-top"
         >
-        <!-- <path
-          :style="{ 'fill': selectedHeader === header.code ? selectedColour : notSelectedColour}"
-          d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
-        ></path> -->
           <path
             :style="{ 'fill': arrowsStyle.header[header.code]}"
             d="M176 32h96c13.3 0 24 10.7 24 24v200h103.8c21.4 0 32.1 25.8 17 41L241 473c-9.4 9.4-24.6 9.4-34 0L31.3 297c-15.1-15.1-4.4-41 17-41H152V56c0-13.3 10.7-24 24-24z" class=""
@@ -84,20 +80,6 @@
 
       <!-- ecosystem-heading -->
       <div class="col-4 ecosystem-heading">
-      <!--   <div class="col-1 lateral-text-wrapper">
-          <div
-            class="lateral-text lateral-text-ontop"
-            :class="{'selected': ecoLine === 'pressure'}"
-            @click="handleEcoPressureLineClick()"
-          >Pressure</div>
-          <div
-            class="lateral-text lateral-text-onbottom"
-            :class="{'selected': ecoLine && ecoLine !== 'pressure'}"
-            @click="handleEcoConditionLineClick()"
-          >Ecosystem condition</div>          
-        </div> -->
-
-        <!-- <canvas class="col-1-sm" id="myCanvas" width="50" height="550"></canvas> -->
         <div class="ecosystem-heading-content">
           <div 
             v-for="ecosystemItem in biseEco"
@@ -110,7 +92,6 @@
           >
             <div class="ecosystem-wrap">
               <p class="ecosystem-text">{{ecosystemItem.name}}</p>
-              <!-- <p class="ecosystem-bar col-1-sm"></p> -->
             </div>
             <svg 
               aria-hidden="true"
@@ -120,16 +101,11 @@
               viewBox="0 0 448 512"
               class="arrow-right"
             >
-            <!-- <path
-              :style="{ 'fill': selectedEco === ecosystemItem.code ? selectedColour : notSelectedColour}"
-              d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
-            ></path> -->
               <path
                 :style="{ 'fill': arrowsStyle.eco[ecosystemItem.code]}"
                 d="M0 304v-96c0-13.3 10.7-24 24-24h200V80.2c0-21.4 25.8-32.1 41-17L441 239c9.4 9.4 9.4 24.6 0 34L265 448.7c-15.1 15.1-41 4.4-41-17V328H24c-13.3 0-24-10.7-24-24z" class=""
               ></path>
             </svg>
-
           </div>
           <div class="ecosystem-item" v-else>
             <div class="ecosystem-wrap header"
@@ -224,10 +200,6 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -1903,10 +1875,6 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -1983,10 +1951,6 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -2063,10 +2027,6 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>
@@ -2139,10 +2099,6 @@
                         >
                           <use :href="'#' + showIcon(indicatorValue.data[policy.code].value, policy.code)" />
                         </svg>
-                    <!--    <span
-                          v-if="policy.code === 'policyUse' || policy.code === 'data'"
-                          class="bold-font"
-                        >{{indicatorValue.data[policy.code].value}} - </span> -->
                         <span>{{policy.name}}</span>
                     </li>
                     </ul>

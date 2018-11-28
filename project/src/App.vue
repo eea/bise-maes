@@ -3,7 +3,7 @@
     <div class="row pad-bot-10">
 
       <div class="col-4 menu-left">
-        <p class="instrument-heading-text">Mapping and assessment of ecosystems and their services</p>
+        <p class="instrument-heading-text"></p>
 
         <transition name="fade">
           <button
@@ -720,7 +720,7 @@ export default {
           }
           break;
         case 'services_header':
-          if(['services', 'water_service', 'marine_service', 'available_service'].includes(this.ecoLine)) {
+          if(['services', 'water_service', 'marine_service', 'available_service', 'total_service', 'available_service', 'urban_service'].includes(this.ecoLine)) {
             return 'selected'
           }
           break;
@@ -747,7 +747,7 @@ export default {
       const theSelectedColour = headerItem ? headerItem.colour : selectedColour;
 
       switch (expr) {
-        case 'colourAllHeaders':
+        case 'colourAllHeadersExceptMarine':
           Object.keys(tempArrowStyle.header).map((key) => {
             if(key !== 'marine') {
               tempArrowStyle.header[key] = theSelectedColour;
@@ -763,7 +763,7 @@ export default {
             });
             tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
-          case 'colourAllAllHeaders':
+          case 'colourAllHeadersAndServices':
             Object.keys(tempArrowStyle.header).map((key) => {
               tempArrowStyle.header[key] = theSelectedColour;
             });
@@ -789,23 +789,15 @@ export default {
               tempArrowStyle.header[key] = notSelectedColour;
             }
           });
-          Object.keys(tempArrowStyle.eco).map((key) => {
-            if(!['pressure','pressure_header'].includes(key))
-              tempArrowStyle.eco[key] = theSelectedColour;
-          });
           tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
-        case 'colourAllMarineHeaders':
+        case 'colourOnlyMarineHeaders':
           Object.keys(tempArrowStyle.header).map((key) => {
             if(key === 'marine') {
               tempArrowStyle.header[key] = theSelectedColour;
             } else {
               tempArrowStyle.header[key] = notSelectedColour;
             }
-          });
-          Object.keys(tempArrowStyle.eco).map((key) => {
-            if(!['pressure','pressure_header'].includes(key))
-              tempArrowStyle.eco[key] = theSelectedColour;
           });
           tempArrowStyle.eco[ecoItem] = theSelectedColour;
           break;
@@ -867,7 +859,7 @@ export default {
     handleEcoPressureLineClick() {
       this.resetSelected();
       this.ecoLine = 'pressure';
-      this.manageArrows('colourAllHeaders', 'pressure', null);
+      this.manageArrows('colourAllHeadersExceptMarine', 'pressure', null);
     },
 
     handleEcoServicesLineClick(){
@@ -897,17 +889,17 @@ export default {
     },
 
     handleSelectedMarineEcoServices(){
-      this.manageArrows('colourAllMarineHeaders', this.selectedEco, null);
+      this.manageArrows('colourOnlyMarineHeaders', this.selectedEco, null);
       this.ecoLine = 'marine_service';
     },
 
     handleSelectedTotalServices(){
-      this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+      this.manageArrows('colourAllHeadersAndServices', this.selectedEco, null);
       this.ecoLine = 'total_service';
     },
 
     handleSelectedAvailableServices(){
-      this.manageArrows('colourAllAllHeaders', this.selectedEco, null);
+      this.manageArrows('colourAllHeaders', this.selectedEco, null);
       this.ecoLine = 'available_service';
     },
 
@@ -1341,7 +1333,7 @@ body {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   padding: 1rem;
-  background-color: #e9bf6c33;
+  background-color: #e9bf6c26;
 }
 .modal-body ul {
   list-style-type: none;
@@ -1366,7 +1358,8 @@ body {
 }
 .icon-svg {
   height: 15px;
-  width: 15px;
+  width: 25px;
+  margin-bottom: -3px;
 }
 
 .btn:not(:disabled):not(.disabled) {
@@ -2076,15 +2069,6 @@ button{
   overflow: auto;
 }
 
-.row.full {
-  position: relative;
-}
-
-.item.full {
-  position: absolute;
-  width: 100%;
-}
-
 .table.full td > br{
   display: none;
 }
@@ -2116,5 +2100,11 @@ button{
 }
 .indicator-li .modal-header {
   padding-left: .5rem;
+}
+
+#waterService, #urbanService, #totalService, #availableService, #marineService {
+  /* width: 100%;
+  float: left; */
+  z-index: -1;
 }
 </style>

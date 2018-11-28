@@ -53,7 +53,7 @@
     </div>
 
     <!-- lateral ecosystem 0y-->
-    <div class="row pad-bot-10" v-if="dataLoaded">
+    <div class="row app-content-body pad-bot-10" v-if="dataLoaded">
 
       <!-- ecosystem-heading -->
       <div class="col-4 ecosystem-heading">
@@ -196,6 +196,11 @@
                   </ul>
                 </div>
               </div>
+             
+              <p><i>
+                <span v-html="selectedItem.annotationText"></span>
+              </i></p>
+
             </div>
 
           </div>
@@ -599,6 +604,11 @@
                   </ul>
                 </div>
               </div>
+
+              <p><i>
+                <span v-html="selectedHeaderItem.annotationText"></span>
+              </i></p>
+
             </div>
 
           </div>
@@ -616,6 +626,18 @@ import tables from './assets/tables.js'
 const notSelectedColour = 'lightgrey';
 const selectedColour = '#e29292';
 let displayedClassNames = {};
+
+const headerTextAnnotations = {
+  'urban': 'Full text on <a href="https://biodiversity.europa.eu/maes/1-urbanecosystems_condition_final.xlsx/@@download/file/1-urbanecosystems_condition_final.xlsx">this document</a>',
+  'crop': 'Full text on <a href="https://biodiversity.europa.eu/maes/2-3-agroecosystems_condition_final.xlsx/@@download/file/2-3-agroecosystems_condition_final.xlsx">this document</a>',
+  'grass': 'Full text on <a href="https://biodiversity.europa.eu/maes/2-3-agroecosystems_condition_final.xlsx/@@download/file/2-3-agroecosystems_condition_final.xlsx">this document</a>',
+  'forest': 'Full text on <a href="https://biodiversity.europa.eu/maes/4-forestecosystems_condition_final.xlsx/@@download/file/4.%20ForestEcosystems_Condition_FINAL.xlsx">this document</a>',
+  'healthland': 'Full text on <a href="https://biodiversity.europa.eu/maes/5-6-7-natureecosystems_condition_final.xlsx/@@download/file/5-6-7.%20NatureEcosystems_Condition_FINAL.xlsx">this document</a>',
+  'sparse': 'Full text on <a href="https://biodiversity.europa.eu/maes/5-6-7-natureecosystems_condition_final.xlsx/@@download/file/5-6-7.%20NatureEcosystems_Condition_FINAL.xlsx">this document</a>',
+  'wetland': 'Full text on <a href="https://biodiversity.europa.eu/maes/5-6-7-natureecosystems_condition_final.xlsx/@@download/file/5-6-7.%20NatureEcosystems_Condition_FINAL.xlsx">this document</a>',
+  'rivers': 'Full text on <a href="https://biodiversity.europa.eu/maes/8-freshwaterecosystems_condition_final.xlsx/@@download/file/8.%20FreshwaterEcosystems_Condition_FINAL.xlsx">this document</a>',
+  'marine': 'Full text on <a href="https://biodiversity.europa.eu/maes/9-marine_ecosystems_condition_final.xlsx/@@download/file/9.%20Marine_Ecosystems_Condition_FINAL.xlsx">this document</a>',
+};
 
 export default {
   name: 'app',
@@ -646,6 +668,7 @@ export default {
     mustSelectLandOrWater: false,
     arrowsStyle: { header: {}, eco: {} },
     ecoLine: null,
+    headerTextAnnotations,
   }
 },
 
@@ -839,7 +862,7 @@ export default {
     handleHeaderClick(ev) {
       this.resetSelected();
       this.manageArrows('colourAllEco', null, ev.code);
-      this.selectedHeaderItem = this.bise[ev.code];
+      this.selectedHeaderItem = Object.assign({}, this.bise[ev.code], {annotationText: headerTextAnnotations[ev.code]});
     },
 
     handleEcoClick(ev) {
@@ -927,7 +950,7 @@ export default {
     handleSelected(key, ecosysKey) {
       this.resetSelected();
       this.manageArrows('colourOnlyTwo', ecosysKey, key)
-      this.selectedItem = this.bise[key][ecosysKey];
+      this.selectedItem = Object.assign({}, this.bise[key][ecosysKey], {annotationText: headerTextAnnotations[key]});
       this.selectedEco = ecosysKey;
       this.selectedHeader = key;
       this.selectedColour = selectedColour;      
@@ -2103,8 +2126,27 @@ button{
 }
 
 #waterService, #urbanService, #totalService, #availableService, #marineService {
-  /* width: 100%;
-  float: left; */
   z-index: -1;
+}
+
+.modal-title {
+  color: white!important;
+}
+
+.modal-content {
+  margin: 0!important;
+}
+
+.app-content-body {
+  position: relative;
+}
+
+.row.full {
+  position: absolute;
+}
+
+.item.full {
+  width: 100%;
+  position: relative !important;
 }
 </style>
